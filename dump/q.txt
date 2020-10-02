@@ -1,0 +1,1 @@
+SELECT a.`id`, GROUP_CONCAT(c.`nama_obat`) AS `list_obat`, DATE_FORMAT(a.`created_at`, '%d/%m/%Y') AS `tanggal`, TIME_FORMAT(a.`created_at`, '%H:%i') AS `jam` FROM `apotek_detail` a LEFT JOIN `apotek_detail_obat` b ON a.`id` = b.`id_penjualan` LEFT JOIN `obats` c ON b.`id_obat` = c.`id` WHERE a.`deleted_at` IS NULL ORDER BY a.`id` asc GROUP BY a.`id` 

@@ -1,0 +1,35 @@
+.rm-detail {
+	font-size: 13px;
+    margin-bottom: 10px;
+}
+
+#tableDetail tbody {
+	font-size: 10px;
+}
+
+#tableRM thead {
+	font-size: 8px;
+}
+
+#tableRM thead th {
+	font-weight: 600;
+}
+
+#tableRM tbody {
+	font-size: 10px;
+}
+
+#tableDetail tbody td {
+	border: none;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+#tableDetail tbody tr td:first-child {
+	text-align: right;
+}
+
+#tableDetail tbody tr td:last-child {
+	text-align: left;
+	font-weight: 600;
+}
