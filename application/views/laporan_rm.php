@@ -37,6 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </head>
 
 <body class="">
+  <?php error_reporting(0);?>
   <div class="wrapper ">
     <div class="sidebar" data-color="blue">
       <!--
@@ -122,7 +123,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
               ?>
 
               <div class="card-body d-print-none">
-                <form id="formData" action="<?php echo site_url('LaporanRm/lapRekamMedis')?>" method="GET">
+                <form id="formData" action="<?php echo site_url('LaporanRm/pencarianRM')?>" method="GET">
                 	<div class="row d-print-none">
                     <div class="col-lg-4 d-print-none">
                       <div class="form-group d-print-none">
@@ -167,17 +168,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </a>
               </div>
 
-              <?php
-                $id = isset($_GET['id']) ? $_GET['id'] : null;
-              ?>
-
-              <?php
-                if ($id == 3) { ?>
+             
 
                   <!-- Laporan RM Persalinan -->
                   <div class="card">
                   <div class="card-body">
-                    <p>Laporan RM Persalinan</p>
+                    <?php
+                      if ($id=='1') {
+                        echo "Laporan RM Pemeriksaan Kehamilan";
+                      } else if($id=='3'){
+                        echo "Laporan RM Persalinan";
+                      } else if($id=='8'){
+                        echo "Laporan RM Imunisasi";
+                      } else if($id == '9'){
+                        echo "Laporan RM Pemeriksaan Umum";
+                      } else if($id == '34'){
+                        echo "Laporan RM Program Ispa";
+                      }else if ($id == '37'){
+                        echo "Laporan RM KB";
+                      } else {
+                        echo "Laporan RM";
+                      }
+                    ?>
                     <div class="table-responsive">
                       <table id="tabel-data" class="table table-striped table-bordered">
                         <thead>
@@ -186,491 +198,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <th>Waktu</th>
                             <th>No Registrasi</th>
                             <th>Nama Pasien</th>
-                            <th>Jenis Kelamin</th>
-                            <th>Umur</th>
                             <th>Tanggal Lahir</th>
-                            <th>Jam Lahir</th>
-                            <th>BB</th>
-                            <th>PB</th>
-                            <th>Resiko</th>
-                            <th>Diagnosa</th>
-                            <th>Nama Obat</th>
-                            <th>Tindakan Medis</th>
-                            <!-- <th>Obatt</th> -->
+                            <th>Aksi</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <?php
-                            $no=1;
-                            foreach($lapRekamMedis_model as $hpm) { ?>
-                              <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= $hpm->created_at ?></td>
-                                <td><?= $hpm->no_registrasi ?></td>
-                                <td><?= $hpm->nama_pasien ?></td>
-                                <td><?= $hpm->jenis_kelamin ?></td>
-                                <td><?= $hpm->umur ?></td>
-                                <td><?= $hpm->tgl_lahir ?></td>
-                                <td><?= $hpm->jam_lahir ?></td>
-                                <td><?= $hpm->bb ?></td>
-                                <td><?= $hpm->pb ?></td>
-                                <td><?= $hpm->resiko ?></td>
-                                <td><?= $hpm->catatan ?></td>
-                                <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmTindakanMedisPersalinan($hpm->id_antrian) as $hpm) {
-                                        echo $hpm->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatPersalinan($hpm->id_antrian) as $hpm) {
-                                        echo $hpm->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                              </tr>
-                              <?php
-                            }
+                          <?php 
+                          $no=1;
+                          foreach ($pencarianRM->result() as $i ) { 
+                            
                           ?>
+
+                          <tr>
+                            <td><?php echo $no++;?></td>
+                            <td><?php echo $i->tgl_antrian;?></td>
+                            <td><?php echo $i->no_registrasi;?></td>
+                            <td><?php echo $i->nama_pasien;?></td>
+                            <td><?php echo $i->tgl_lahir;?></td>
+                            <td><a href="<?php echo base_url('LaporanRm/detailRmPasien/'.$id.'/'.substr($i->tgl_antrian, 0,10).'/');?>"> Detail</a></td>
+                          </tr>
+                          <?php } ?>
                         </tbody>
                       </table>
-                    </div>
-                  </div>
-                  </div>
-
-                  <?php
-                } else if ($id == 34) { ?>
-
-                  <!-- Laporan RM Ispa -->
-                  <div class="card">
-                    <div class="card-body">
-                      <p>Laporan RM Ispa</p>
-                      <div class="table-responsive">
-                        <table id="tabel-data" class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th>No</th>
-                              <th>Waktu</th>
-                              <th>No Registrasi</th>
-                              <th>Nama Anak</th>
-                              <th>Jenis Kelamin</th>
-                              <th>Umur Tahun</th>
-                              <th>Umur Bulan</th>
-                              <th>TB-PB</th>
-                              <th>BB</th>
-                              <th>Catatan</th>
-                              <th>Nama Obat</th>
-                              <th>Tindakan Medis</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php
-                              $no=1;
-                              foreach($lapRekamMedisIspaa as $i) { ?>
-                                <tr>
-                                  <td><?= $no++ ?></td>
-                                  <td><?= $i->created_at ?></td>
-                                  <td><?= $i->no_registrasi ?></td>
-                                  <td><?= $i->nama_anak ?></td>
-                                  <td><?= $i->jenis_kelamin ?></td>
-                                  <td><?= $i->umur_tahun ?></td>
-                                  <td><?= $i->umur_bulan ?></td>
-                                  <td><?= $i->tb_pb ?></td>
-                                  <td><?= $i->bb ?></td>
-                                  <td><?= $i->catatan ?></td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmTindakanMedisIspa($i->id_antrian) as $o) {
-                                        echo $o->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatIspa($i->id_antrian) as $o) {
-                                        echo $o->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                </tr>
-                                <?php
-                              }
-                            ?>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-
-                  <?php
-                } else if ($id == 8) { ?>
-
-                  <!-- Laporan RM Imunisasi -->
-                  <div class="card">
-                    <div class="card-body">
-                      <p>Laporan RM Imunisasi</p>
-                      <div class="table-responsive">
-                        <table id="tabel-data" class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th>No</th>
-                              <th>Waktu</th>
-                              <th>Nama Anak</th>
-                              <th>Tanggal Lahir</th>
-                              <th>BB Lahir</th>
-                              <th>BB</th>
-                              <th>PB</th>
-                              <th>ID Macam Imunisasi</th>
-                              <th>HB0</th>
-                              <th>BCG</th>
-                              <th>Pentabio1</th>
-                              <th>Pentabio2</th>
-                              <th>Pentabio3</th>
-                              <th>tt</th>
-                              <th>Pentabio Ulang</th>
-                              <th>Campak Ulang</th>
-                              <th>Id Macam Tindakan Imunisasi</th>
-                              <th>Catatan</th>
-                              <th>Tindakan Medis</th>
-                              <th>Nama Obat</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php
-                              $no=1;
-                              foreach($lapRekamMedisImunisasi as $i) { ?>
-                                <tr>
-                                  <td><?= $no++ ?></td>
-                                  <td><?= $i->created_at ?></td>
-                                  <td><?= $i->nama_anak ?></td>
-                                  <td><?= $i->tgl_lahir ?></td>
-                                  <td><?= $i->bb_lahir ?></td>
-                                  <td><?= $i->bb ?></td>
-                                  <td><?= $i->pb ?></td>
-                                  <td><?= $i->id_macam_imunisasi ?></td>
-                                  <td><?= $i->hb0 ?></td>
-                                  <td><?= $i->bcg ?></td>
-                                  <td><?= $i->pentabio1 ?></td>
-                                  <td><?= $i->pentabio2 ?></td>
-                                  <td><?= $i->pentabio3 ?></td>
-                                  <td><?= $i->tt ?></td>
-                                  <td><?= $i->pentabio_ulang ?></td>
-                                  <td><?= $i->campak_ulang ?></td>
-                                  <td><?= $i->nama_tindakan ?></td>
-                                  <td><?= $i->catatan ?></td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->TindakanMedisImun($i->id_antrian) as $o) {
-                                        echo $o->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatImunisasi($i->id_antrian) as $o) {
-                                        echo $o->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                </tr>
-                                <?php
-                              }
-                            ?>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-
-
-                  <?php
-                } else if ($id == 9)
-
-                { ?>
-
-                    <!-- Laporan RM Pemeriksaan Umum -->
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="table-responsive">
-                      <p>Laporan RM Pemeriksaan Umum</p>
-                        <table id="tabel-data" class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th>No</th>
-                              <th>Waktu</th>
-                              <th>Nama Pasien</th>
-                              <th>Jenis Kelamin</th>
-                              <th>Nama Penyakit</th>
-                              <th>Rentang Umur</th>
-                              <th>Macam Tindakan Imunisasi</th>
-                              <th>catatan</th>
-                              <th>Tindakan Medis</th>
-                              <th>Nama Obat</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php
-                              $no=1;
-                              foreach($lapRekamMedisUmum as $u) { ?>
-                                <tr>
-                                  <td><?= $no++ ?></td>
-                                  <td><?= $u->created_at ?></td>
-                                  <td><?= $u->nama_pasien ?></td>
-                                  <td><?= $u->jenis_kelamin ?></td>
-                                  <td><?= $u->nama_penyakit ?></td>
-                                  <td><?= $u->rentang_umur ?></td>
-                                  <td><?php if($u->id_macam_tindakan_imunisasi == "1"){
-                                    echo "Khitan";
-                                  } else{
-                                    echo "Tindik";
-                                  } ?></td>
-                                  <td><?= $u->catatan ?></td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmTindakanMedisUmum($u->id_antrian) as $u) {
-                                        echo $u->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatUmum($u->id_antrian) as $u) {
-                                        echo $u->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                </tr>
-                                <?php
-                              }
-                            ?>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-
-                <?php } else if ($id==37) { ?>
-
-                    <!-- Laporan RM KB -->
-                  <div class="card">
-                    <div class="card-body">
-                      <p>Laporan RM KB</p>
-                      <div class="table-responsive">
-                        <table id="tabel-data" class="table table-bordered">
-                          <thead>
-                            <tr>
-                              <th>No</th>
-                              <th>Waktu</th>
-                              <!-- <th>Id Antrian</th> -->
-                              <th>Nama Pasien</th>
-                              <th>Umur</th>
-                              <th>Nama Suami</th>
-                              <th>Alamat</th>
-                              <th>Jumlah Anak Laki</th>
-                              <th>Jumlah Anak Perempuan</th>
-                              <th>Jumlah Anak</th>
-                              <th>Usia Anak Terkecil</th>
-                              <th>Id Satuan Usia</th>
-                              <th>Pasang Baru</th>
-                              <th>Pasang Cabut</th>
-                              <th>Id Kontrasepsi</th>
-                              <th>Akli</th>
-                              <th>T-4</th>
-                              <th>Ganti Cara</th>
-                              <th>catatan</th>
-                              <th>Tindakan Medis</th>
-                              <th>Nama Obat</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php
-                              $no=1;
-                              foreach($lapRekamMedisKb as $i) { ?>
-                                <tr>
-                                  <td><?= $no++ ?></td>
-                                  <td><?= $i->created_at ?></td>
-                                  <td><?= $i->nama_pasien ?></td>
-                                  <td><?= $i->umur ?></td>
-                                  <td><?= $i->nama_suami ?></td>
-                                  <td><?= $i->alamat ?></td>
-                                  <td><?= $i->jml_anak_laki ?></td>
-                                  <td><?= $i->jml_anak_perempuan ?></td>
-                                  <td><?= $i->jml_anak ?></td>
-                                  <td><?= $i->usia_anak_terkecil ?></td>
-                                  <td><?= $i->id_satuan_usia ?></td>
-                                  <td><?= $i->pasang_baru ?></td>
-                                  <td><?= $i->pasang_cabut ?></td>
-                                  <td><?= $i->id_alat_kontrasepsi ?></td>
-                                  <td><?= $i->akli ?></td>
-                                  <td><?= $i->t_4 ?></td>
-                                  <td><?= $i->ganti_cara ?></td>
-                                  <td><?= $i->catatan ?></td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmTindakanMedisKb($i->id_antrian) as $i) {
-                                        echo $i->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatKb($i->id_antrian) as $i) {
-                                        echo $i->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                </tr>
-                                <?php
-                              }
-                            ?>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-
-                <?php } else if ($id==1) { ?>
-
-                      <!-- Laporan RM Kehamilan -->
-                    <div class="card">
-                      <div class="card-body">
-                        <p>Laporan RM Kehamilan</p>
-                        <div class="table-responsive">
-                          <table id="tabel-data" class="table table-bordered">
-                            <thead>
-                              <tr>
-                                <th>No</th>
-                                <th>Waktu</th>
-                                <th>No Registrasi</th>
-                                <th>Nama Pasien</th>
-                                <th>Tanggal Lahir</th>
-                                <!-- <th>HPHT</th>
-                                <th>TP</th>
-                                <th>BB</th>
-                                <th>TB</th>
-                                <th>Usia Kehamilan</th>
-                                <th>GPA</th>
-                                <th>K1</th>
-                                <th>K4</th>
-                                <th>TT</th>
-                                <th>LILA</th>
-                                <th>Hb</th>
-                                <th>Resiko</th>
-                                <th>Keterangan</th>
-                                <th>catatan</th>
-                                <th>Tindakan Medis</th>
-                                <th>Nama Obat</th> -->
-                                <th>Aksi</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php
-                                $no=1;
-                                foreach($lapRekamMedisKehamilan as $i) { ?>
-                                  <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $i->created_at ?></td>
-                                    <td><?= $i->no_registrasi ?></td>
-                                    <td><?= $i->nama_pasien ?></td>
-                                    <td><?= $i->tgl_lahir ?></td>
-                                    <!-- <td><?= $i->hpht ?></td>
-                                    <td><?= $i->tp ?></td>
-                                    <td><?= $i->bb ?></td>
-                                    <td><?= $i->tb ?></td>
-                                    <td><?= $i->usia_kehamilan ?></td>
-                                    <td><?= $i->gpa ?></td>
-                                    <td><?= $i->k1 ?></td>
-                                    <td><?= $i->k4 ?></td>
-                                    <td><?= $i->tt ?></td>
-                                    <td><?= $i->lila ?></td>
-                                    <td><?= $i->hb ?></td>
-                                    <td><?= $i->resiko ?></td>
-                                    <td><?= $i->keterangan ?></td>
-                                    <td><?= $i->catatan ?></td> -->
-                                    <!-- <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->TindakanMedisKehamilan($i->id_antrian) as $o) {
-                                        echo $o->nama_biaya_medis . ', ';
-                                      }
-                                    ?>
-                                  </td>
-                                  <td>
-                                    <?php
-                                      $tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
-                                      $tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
-                                      $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-                                      foreach($this->controller->RmObatKehamilan($i->id_antrian) as $o) {
-                                        echo $o->nama_obat . ', ';
-                                      }
-                                    ?>
-                                  </td> -->
-                                  <td>
-                                    <a href="<?php echo base_url('LaporanRm/detailRm?tgl1='.$tgl1.'&tgl2='.$tgl2.'&id='.$id); ?>">
-                                      <button type="button" class="btn btn-danger d-print-none">Detail</button>
-                                    </a>
-                                  </td>
-                                  </tr>
-                                  <?php
-                                }
-                              ?>
-                            </tbody>
-                            <!-- <tfoot>
-                                    <tr>
-                                      <p>jumlah anggotaa : <?php echo $no; ?></p>
-                                    </tr>
-                            </tfoot> -->
-                          </table>
                         </div>
                       </div>
                     </div>
-                  <?php }  ?>
+
 
             </div>
           </div>

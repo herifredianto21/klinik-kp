@@ -125,7 +125,24 @@ class LaporanRm extends CI_Controller {
 		}
 
 	}
+	//start fungsi yg dibikin angga
+	public function pencarianRM(){
+		$tgl1 = isset($_GET['tgl1']) ? $_GET['tgl1'] : null;
+		$tgl2 = isset($_GET['tgl2']) ? $_GET['tgl2'] : null;
+		$id = isset($_GET['id']) ? $_GET['id'] : null;
 
+		
+		$data['pencarianRM'] = $this->model->pencarianRM($tgl1,$tgl2,$id);
+		$this->load->view('laporan_rm', $data);
+	}
+	public function detailRmPasien(){
+		$tgl = $this->uri->segment(4);
+		$idPelayanan = $this->uri->segment(3);
+		
+		$data['detailKehamilan'] = $this->model->detailRmPasien($idPelayanan,$tgl);
+		$this->load->view('laporanRm_detail', $data);
+	}
+	//end fungsi yg dibikin angga
 	public function lapRekamMedis()
 	{
 		// define('FPDF_FONTPATH',$this->config->item('fonts_path'));
