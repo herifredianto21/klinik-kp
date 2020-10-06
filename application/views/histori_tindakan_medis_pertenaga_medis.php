@@ -250,8 +250,8 @@
                           <tbody>
 
                             <?php
+                              $total = 0;
                               if (!$histori_pertenaga_medis == null) { 
-                                $total = 0;  
                                 $no = 1;
 
                                 foreach($histori_pertenaga_medis as $hpm) {?>
