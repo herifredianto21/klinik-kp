@@ -84,7 +84,43 @@ class LaporanRm_model extends CI_Model {
         $s = $this->db->query($q)->result();
         return $s;
     }
-
+    //start fungsi yg dibikin angga
+    //untuk pencarian laporan RM
+    function pencarianRM($tgl1,$tgl2,$id){
+        $pencarianRM= $this->db->query("SELECT p.no_registrasi,a.tgl_antrian,p.nama_pasien,p.tgl_lahir 
+                                                FROM antrians as a JOIN pasiens as p
+                                                ON a.id_pasien=p.id
+                                                where Substring(tgl_antrian,1,10) BETWEEN '$tgl1' AND '$tgl2' and id_jenis_pelayanan='$id' ");
+        return $pencarianRM;
+    }
+    function detailRmPasien($id,$tgl){
+        
+            $detailKehamilan = $this->db->query("SELECT pu.catatan,a.created_at,a.tgl_antrian,p.nama_pasien,p.jk_pasien,jp.nama_penyakit, ru.rentang_umur,mti.nama_tindakan,tp.keterangan_tindak_lanjut,tpd.keterangan_tindakan_pasien,apo.id_obat,o.nama_obat
+                            FROM detail_pemeriksaan_umum as pu 
+                            JOIN antrians as a 
+                            ON pu.id_antrian = a.id 
+                            JOIN pasiens as p 
+                            ON a.id_pasien=p.id 
+                            JOIN jenis_penyakit as jp 
+                            ON pu.id_penyakit = jp.id 
+                            JOIN rentang_umur as ru 
+                            ON ru.id=pu.id_rentang_umur 
+                            JOIN macam_tindakan_imunisasi as mti 
+                            ON mti.id = pu.id_macam_tindakan_imunisasi 
+                            JOIN tindakan_pasien as tp 
+                            ON tp.id_antrian = pu.id_antrian 
+                            JOIN tindakan_pasien_detail as tpd 
+                            ON tpd.id_tindakan_pasien = tp.id 
+                            JOIN apotek_detail_obat as apo 
+                            ON apo.id_antrian = pu.id_antrian
+                            JOIN obats as o
+                            ON o.id=apo.id_obat
+                            where substring(a.tgl_antrian,1,10) ='$tgl'");
+            return $detailKehamilan;
+        
+        
+    }
+   //end fungsi yg dibikin angga
     function _lapRekamMedisKehamilan($tgl1, $tgl2, $id){
         $q="SELECT a.created_at, a.id_antrian, p.no_registrasi, p.nama_pasien, a.tgl_lahir, a.hpht, a.tp, a.bb, a.tb, a.usia_kehamilan, a.gpa, a.k1, a.k4, a.tt, a.lila, a.hb, a.resiko, a.keterangan, a.catatan, n.nama_biaya_medis, f.nama_obat
         FROM
