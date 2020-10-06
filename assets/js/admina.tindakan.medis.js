@@ -15,7 +15,6 @@ $(document).ready(function() {
     
     updateUrlForButtonSimpan();
     updateUrlForInsertTindakan();
-    // updateUrlForDeleteTindakan();
 
     // DataTables
     var dataTables = $('table').dataTable();
@@ -96,31 +95,26 @@ $(document).ready(function() {
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
-        updateUrlForDeleteTindakan();
     });
     $('#selectTindakLanjut').on('change', function() {
         changeUrlParameter('tindak_lanjut', $('#selectTindakLanjut').val());
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
-        updateUrlForDeleteTindakan();
     });
     $('#textareaKeteranganTindakLanjut').on('keyup change', function() {
         changeUrlParameter('keterangan_tindak_lanjut', $('#textareaKeteranganTindakLanjut').val());
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
-        updateUrlForDeleteTindakan();
     });
     $('#aSimpanTindakanMedis').on('click', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
-        updateUrlForDeleteTindakan();
     });
     $('#formInsertTindakan').on('submit', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
-        updateUrlForDeleteTindakan();
     });
 });
 
@@ -190,52 +184,13 @@ var updateUrlForInsertTindakan = function() {
     $('#formInsertTindakan').attr('action', newUrl);
 }
 
-var updateUrlForDeleteTindakan = function(id_tindakan_pasien_detail) {
-    id_antrian = getUrlParameter('id_antrian');
-    nama_pasien = getUrlParameter('nama_pasien');
-    nama_dokter = getUrlParameter('nama_dokter');
-    diagnosa = getUrlParameter('diagnosa');
-    tindak_lanjut = getUrlParameter('tindak_lanjut');
-    keterangan_tindak_lanjut = getUrlParameter('keterangan_tindak_lanjut');
-    
-    newUrl = baseurl + 'tindakan-medis/hapusTindakan?langkah=tindakan&id_antrian=' + id_antrian + '&id_tindakan_pasien_detail=' + id_tindakan_pasien_detail + '&nama_pasien=' + nama_pasien + '&nama_dokter=' + nama_dokter + '&diagnosa=' + diagnosa + '&tindak_lanjut=' + tindak_lanjut + '&keterangan_tindak_lanjut=' + keterangan_tindak_lanjut + '&id_tindakan_pasien_detail=' + id_tindakan_pasien_detail;
-    // newUrl = baseurl + 'tindakan-medis/hapusTindakan?;
-
-    $('#aDeleteTindakan').attr('href', newUrl);
-    // alert('updateUrlForDeleteTindakan(' + id_tindakan_pasien_detail + ')');
-}
-
-
-/* const delete = async (id) => {
-    const response = await fetch();
-    const data = await response.json();
-
-    return data;
-} */
-
-/* var hapus = function(id) {
-    delete(id)
-        .then(data => console.log('resolved:', data));
-}
-
-const request = new XMLHttpRequest();
-
-request.open('GET') */
-
-
-
-
-
-const getTodos = (url, callback) => {
-    console.log(callback);
+const request = (url, callback) => {
     const request = new XMLHttpRequest();
 
     request.addEventListener('readystatechange', () => {
         if (request.readyState === 4 && request.status === 200) {
             const data = JSON.parse(request.responseText);
             callback(undefined, data);
-            console.log(request.responseText);
-            // location.reload();
         } else if (request.readyState === 4) {
             callback('could not fetch data', undefined);
         }
@@ -243,23 +198,16 @@ const getTodos = (url, callback) => {
 
     request.open('GET', url);
     request.send();
-
-    // alert('finished');
-
 }
 
-
-
-var hapus = function(url) {
-    // alert(url);
-
+var doInBackground = function(url) {
     if (confirm('Apakah Anda yakin ingin menghapus?')) {
-        getTodos(url, (err, data) => {
-            console.log('callback fired');
+        request(url, (err, data) => {
             if (err) {
                 console.log('err:', err);
             } else {
-                console.log('data:', data);
+                // console.log('data:', data);
+                location.reload();
             }
         });
     }
