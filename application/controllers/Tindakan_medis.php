@@ -147,18 +147,18 @@ class Tindakan_medis extends CI_Controller {
     
     public function deleteAddedTindakan()
     {
-        $langkah = $_GET['langkah'];
-        $id_antrian = $_GET['id_antrian'];
+        // $langkah = $_GET['langkah'];
+        // $id_antrian = $_GET['id_antrian'];
         $id_tindakan_pasien_detail = $_GET['id_tindakan_pasien_detail'];
-        $nama_pasien = $_GET['nama_pasien'];
-        $nama_dokter = $_GET['nama_dokter'];
-        $diagnosa = $_GET['diagnosa'];
-        $tindak_lanjut = $_GET['tindak_lanjut'];
-        $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
+        // $nama_pasien = $_GET['nama_pasien'];
+        // $nama_dokter = $_GET['nama_dokter'];
+        // $diagnosa = $_GET['diagnosa'];
+        // $tindak_lanjut = $_GET['tindak_lanjut'];
+        // $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
 
         $this->model->_deleteAddedTindakan($id_tindakan_pasien_detail);
         
-        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
+        // redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
     }
 
     /* SIMPAN SEMUA DATA */

@@ -296,32 +296,17 @@
                                     <td><?= $gat->keterangan_tindakan_pasien ?></td>
                                     <td>Rp. <?= number_format(intval($gat->biaya_medis), 2, ',', '.') ?></td>
                                     <td>
-                                      <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                      
-                                      <!-- <a id="aDeleteTindakan" href="<?= base_url('tindakan-medis/deleteAddedTindakan?id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail . '&langkah=' . $_GET['langkah'] . '&id_antrian=' . $_GET['id_antrian']) ?>" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                      </a> -->
-                                      
-                                      <!-- <a id="aDeleteTindakan" href="<?= base_url('tindakan-medis/deleteAddedTindakan?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut) ?>">
-                                        <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                      </a> -->
-                                      
-                                      <button type="button" onclick="hapus('<?= base_url('tindakan-medis/deleteAddedTindakan?id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail) ?>')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                      <a href="<?= base_url('tindakan-medis#') ?>">
+                                        <button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button>
+                                      </a>
+                                      <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedTindakan?id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail) ?>')" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                      </button>
                                     </td>
                                   </tr>
                                   <?php
                                 }
                               ?>
-                              <!-- <tr>
-                                <td>1</td>
-                                <td>Pemeriksaan Umum</td>
-                                <td>Sudah 2 hari</td>
-                                <td>Rp 10.000</td>
-                                <td>
-                                  <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                  <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>
-                                </td>
-                              </tr> -->
                             </tbody>
 
                             <tfoot>

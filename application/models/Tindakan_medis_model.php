@@ -175,11 +175,6 @@ class Tindakan_medis_model extends CI_Model {
     {
         $q = "DELETE FROM tindakan_pasien_detail WHERE id = '$id'";
         
-        /* if (!$this->db->simple_query($q)) {
-            echo "Error di _deleteAddedTindakan()";
-            exit;
-        } */
-
         if ($this->db->simple_query($q)) {
             echo '{ "text": "Berhasil menghapus." }';
         } else {
