@@ -184,7 +184,7 @@
                             <!-- <td><?= $tp->status_antrian ?></td> -->
                             <td><?= $tp->tgl_antrian ?></td>
                             <td>
-                              <a href="<?= base_url('tindakan-medis?langkah=diagnosa&id_antrian=' . $tp->id . '&nama_pasien=' . $tp->nama_pasien . '&nama_dokter=' . $tp->nama_dokter) ?>">
+                              <a href="<?= base_url('tindakan-medis?langkah=diagnosa&id_antrian=' . $tp->id . '&id_dokter=' . $tp->id_dokter . '&nama_pasien=' . $tp->nama_pasien . '&nama_dokter=' . $tp->nama_dokter) ?>">
                                 <button class="btn btn-primary btn-sm"><i class="fas fa-notes-medical"></i> Tindak</button>
                               </a>
                             </td>
@@ -429,10 +429,10 @@
                             
                             <tbody>
                               <?php
-                                // TODO: Data belum tampil karena tidak ada data di tabelnya.
+                                $no = 1;
                                 foreach($_getAddedResep as $gar) { ?>
                                   <tr>
-                                    <td><input type="checkbox" class="form-control"></td>
+                                    <td><?= $no++ ?></td>
                                     <td><?= $gar->kode_obat ?></td>
                                     <td><?= $gar->nama_obat ?></td>
                                     <td><?= $gar->kategori ?></td>
@@ -441,38 +441,15 @@
                                     <td><?= $gar->aturan_pakai ?></td>
                                     <td>
                                       <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                      <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>
+                                      <!-- <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a> -->
+                                      <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedResep?id_resep_detail=' . $gar->id_resep_detail) ?>')" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                      </button>
                                     </td>
                                   </tr>
                                   <?php
                                 }
                               ?>
-                              <!-- <tr>
-                                <td>1</td>
-                                <td>OB414</td>
-                                <td>Domperidone</td>
-                                <td>-</td>
-                                <td>20pcs</td>
-                                <td>2pcs</td>
-                                <td>3x1 hari</td>
-                                <td>
-                                  <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                  <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>OB415</td>
-                                <td>Brosur Hamil</td>
-                                <td>-</td>
-                                <td>20pcs</td>
-                                <td>2pcs</td>
-                                <td>3x1 hari</td>
-                                <td>
-                                  <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                  <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>
-                                </td>
-                              </tr> -->
                             </tbody>
                           </table>
                         </div>
@@ -484,7 +461,7 @@
                             <p class="h4">Tambah Resep</p>
                           </div>
 
-                          <form action="<?= base_url() ?>tindakan-medis/addResep?langkah=<?= $_GET['langkah'] ?>&id_antrian=<?= $_GET['id_antrian'] ?>" method="get">
+                          <form id="formInsertResep" action="<?= base_url() ?>tindakan-medis/addResep?langkah=resep&id_antrian=<?= $_GET['id_antrian'] ?>" method="post">
                             <table class="table table-striped table-hover">
                               <thead class="text-primary">
                                 <tr>
@@ -509,7 +486,7 @@
                                       </td>
                                       <td>
                                         <?= $go->kode_obat ?>
-                                        <input type="hidden" name="id[]" value="<?= $go->id ?>">
+                                        <input type="hidden" name="id_obat[]" value="<?= $go->id ?>">
                                       </td>
                                       <td>
                                         <?= $go->nama_obat ?>
@@ -517,12 +494,12 @@
                                       </td>
                                       <td>BELUM</td>
                                       <!-- <td><?= $go->harga_jual_obat ?></td> -->
-                                      <td><input type="text" class="form-control"></td>
+                                      <td><input type="text" name="qty[]" class="form-control"></td>
                                       <td>
                                         <?= $go->nama_satuan ?>
                                         <input type="hidden" name="nama_satuan[]" value="<?= $go->nama_satuan ?>">
                                       </td>
-                                      <td><input type="text" class="form-control"></td>
+                                      <td><input type="text" name="aturan_pakai[]" class="form-control"></td>
                                     </tr>
                                     <?php
                                     $index++;

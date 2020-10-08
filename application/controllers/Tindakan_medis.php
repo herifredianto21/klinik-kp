@@ -37,69 +37,19 @@ class Tindakan_medis extends CI_Controller {
 	{
         $id_antrian = !empty($_GET['id_antrian']) ? $_GET['id_antrian'] : null;
 
+        // Data pasien
         $data['tampil_pasien'] = $this->model->_get_pasien();
 
-        // Diagnosa
-        // Resep
-        $data['_getObat'] = $this->model->_getObat();
-        $data['_getAddedResep'] = $this->model->_getAddedResep($id_antrian);
-        // Tindakan
+        // Data tindakan
         $data['_getTindakan'] = $this->model->_getTindakan($id_antrian);
         $data['_getAddedTindakan'] = $this->model->_getAddedTindakan($id_antrian);
+        
+        // Data resep
+        $data['_getObat'] = $this->model->_getObat($id_antrian);
+        $data['_getAddedResep'] = $this->model->_getAddedResep($id_antrian);
 
         $this->load->view('tindakan_medis', $data);
     }
-
-    
-    /* DIAGNOSA */
-    
-    public function addDiagnosa() {}
-    public function editAddedDiagnosa() {}
-    public function deleteAddedDiagnosa() {}
-    
-    
-    /* RESEP */
-
-    public function addResep()
-    {
-        $langkah = $_GET['langkah'];
-        $id_antrian = $_GET['id_antrian'];
-
-        // Data
-        $pilih = $this->input->post('pilih');
-        $id = $this->input->post('id');
-
-        $id_resep = '';
-        $id_obat = $this->input->post('id_obat');
-        $nama_obat = $this->input->post('nama_obat');
-        $harga_jual_obat = $this->input->post('harga_jual_obat');
-        $satuan = $this->input->post('satuan');
-        $aturan_pakai = $this->input->post('aturan_pakai');
-
-        /* exit;
-        // Cek apakah data sudah ada atau masih kosong
-        if (!$this->model->_cekTindakanPasien($id_antrian)) {
-            // Buat data baru
-            echo "masuk if<br>";
-            $this->model->_addTindakanBaru($id_antrian);
-        }
-
-        // Get id_resep
-        $id_resep = $this->model->_getIdTindakanPasien($id_antrian);
-        echo $id_resep . "<br>"; */
-
-        // Insert data sebanyak checkbox yang dipilih
-        for ($i=0; $i<=count($pilih)-1; $i++) {
-            if ($pilih[$i] == 'checked') {
-                $this->model->_addResep($id[$i], $id_resep, $keterangan_tindakan_pasien[$i]);
-            }
-        }
-
-        // redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian);
-    }
-
-    function editAddedResep() {}
-    function deleteAddedResep() {}
 
     
     /* TINDAKAN */
@@ -108,6 +58,7 @@ class Tindakan_medis extends CI_Controller {
     {
         $langkah = $_GET['langkah'];
         $id_antrian = $_GET['id_antrian'];
+        $id_dokter = $_GET['id_dokter'];
         $nama_pasien = $_GET['nama_pasien'];
         $nama_dokter = $_GET['nama_dokter'];
         $diagnosa = $_GET['diagnosa'];
@@ -119,12 +70,11 @@ class Tindakan_medis extends CI_Controller {
         $id_biaya_medis = $this->input->post('id_biaya_medis');
         $keterangan_tindakan_pasien = $this->input->post('keterangan_tindakan_pasien');
         $id_tindakan_pasien = '';
-        $id_dokter = '18'; // TODO: benerin $id_dokter
 
         // Cek apakah data sudah ada atau masih kosong
         if (!$this->model->_cekTindakanPasien($id_antrian)) {
             // Buat data baru
-            echo "masuk if<br>";
+            echo "Data belum ada, menambah data baru.<br>";
             $this->model->_addTindakanBaru($id_antrian, $id_dokter);
         }
 
@@ -140,38 +90,78 @@ class Tindakan_medis extends CI_Controller {
             }
         }
 
-        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
+        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
     }
 
     function _editAddedTindakan() {}
     
     public function deleteAddedTindakan()
     {
-        // $langkah = $_GET['langkah'];
-        // $id_antrian = $_GET['id_antrian'];
         $id_tindakan_pasien_detail = $_GET['id_tindakan_pasien_detail'];
-        // $nama_pasien = $_GET['nama_pasien'];
-        // $nama_dokter = $_GET['nama_dokter'];
-        // $diagnosa = $_GET['diagnosa'];
-        // $tindak_lanjut = $_GET['tindak_lanjut'];
-        // $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
-
         $this->model->_deleteAddedTindakan($id_tindakan_pasien_detail);
-        
-        // redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
     }
+
+    
+    /* RESEP */
+
+    public function addResep()
+    {
+        $langkah = $_GET['langkah'];
+        $id_antrian = $_GET['id_antrian'];
+        $id_dokter = $_GET['id_dokter'];
+        $nama_pasien = $_GET['nama_pasien'];
+        $nama_dokter = $_GET['nama_dokter'];
+        $diagnosa = $_GET['diagnosa'];
+        $tindak_lanjut = $_GET['tindak_lanjut'];
+        $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
+
+        // Data
+        $pilih = $this->input->post('pilih');
+        $id_obat = $this->input->post('id_obat');
+        $qty = $this->input->post('qty');
+        $aturan_pakai = $this->input->post('aturan_pakai');
+        $id_resep = '';
+
+        // Cek apakah data sudah ada atau masih kosong
+        if (!$this->model->_cekResep($id_antrian)) {
+            // Buat data baru
+            echo "Data belum ada, menambah data baru.<br>";
+            $this->model->_addResepBaru($id_antrian, $id_dokter);
+        }
+
+        // Get id_resep
+        $id_resep = $this->model->_getIdResep($id_antrian);
+        echo $id_resep . "<br>";
+
+        // Insert data sebanyak checkbox yang dipilih
+        for ($i=0; $i<=count($pilih)-1; $i++) {
+            if ($pilih[$i] == 'checked') {
+                $this->model->_addResep($id_resep, $id_obat[$i], $qty[$i], $aturan_pakai[$i]);
+            }
+        }
+
+        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
+    }
+
+    function editAddedResep() {}
+    function deleteAddedResep()
+    {
+        $id_resep_detail = $_GET['id_resep_detail'];
+        $this->model->_deleteAddedResep($id_resep_detail);
+    }
+
 
     /* SIMPAN SEMUA DATA */
     public function simpanTindakanMedis()
     {
         $id_antrian = $_GET['id_antrian'];
+        $id_dokter = $_GET['id_dokter'];
         $diagnosa = $_GET['diagnosa'];
         $tindak_lanjut = $_GET['tindak_lanjut'];
         $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
 
         // Data
         $id_tindakan_pasien = '';
-        $id_dokter = '18'; // TODO: benerin $id_dokter
 
         // Cek apakah data sudah ada atau masih kosong
         if (!$this->model->_cekTindakanPasien($id_antrian)) {

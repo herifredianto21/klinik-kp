@@ -6,7 +6,7 @@ class Tindakan_medis_model extends CI_Model {
 	function _get_pasien()
 	{
 		$q = "SELECT
-                antrians.id, antrians.id_pasien, antrians.no_antrian, pasiens.nama_pasien, jenis_pelayanans.nama_pelayanan, 
+                antrians.id, antrians.id_dokter, antrians.id_pasien, antrians.no_antrian, pasiens.nama_pasien, jenis_pelayanans.nama_pelayanan, 
                 dokters.nama_dokter, antrians.status_antrian, antrians.tgl_antrian
             FROM
                 antrians
@@ -38,7 +38,7 @@ class Tindakan_medis_model extends CI_Model {
     
     /* RESEP */
     
-    function _getObat() 
+    function _getObat($id_antrian = null) 
     {
         $q = "SELECT
                 obats.id, obats.kode_obat, obats.nama_obat, satuans.nama_satuan,
@@ -51,6 +51,24 @@ class Tindakan_medis_model extends CI_Model {
                 obats.deleted_at IS NULL AND 
                 satuans.deleted_at IS NULL";
 
+        if ($id_antrian != null) {
+            $q .= " AND obats.id NOT IN (
+                        SELECT 
+                            obats.id
+                        FROM 
+                            resep_details
+                        JOIN
+                            reseps ON reseps.id = resep_details.id_resep
+                        JOIN
+                            obats ON obats.id = resep_details.id_obat
+                        JOIN
+                            satuans ON satuans.id = obats.id_satuan
+                        WHERE 
+                            resep_details.deleted_at IS NULL AND
+                            reseps.id_antrian = '$id_antrian'
+                    )";
+}
+
         $s = $this->db->query($q)->result();
 
         return $s;
@@ -59,8 +77,8 @@ class Tindakan_medis_model extends CI_Model {
     function _getAddedResep($id_antrian = null) 
     {
         $q = "SELECT 
-                obats.id, obats.kode_obat, obats.nama_obat, obats.harga_jual_obat, 'kategori' AS kategori, 
-                resep_details.qty, satuans.nama_satuan, 'aturan_pakai' AS aturan_pakai
+                obats.id, obats.kode_obat, obats.nama_obat, obats.harga_jual_obat, 'kategori (belum)' AS kategori, 
+                resep_details.id AS id_resep_detail, resep_details.qty, satuans.nama_satuan, resep_details.aturan_pakai
             FROM 
                 resep_details
             JOIN
@@ -71,16 +89,83 @@ class Tindakan_medis_model extends CI_Model {
                 satuans ON satuans.id = obats.id_satuan
             WHERE 
                 resep_details.deleted_at IS NULL AND
-                reseps.id_pasien = '$id_antrian'"; // KESALAHAN: seharusnya pilih salah satu antara id_pasien dan id_antrian
-
+                reseps.id_antrian = '$id_antrian'";
+        
         $s = $this->db->query($q)->result();
 
         return $s;
     }
 
-    function _addResep() {}
+    function _addResep($id_resep, $id_obat, $qty, $aturan_pakai)
+    {
+        $q =    "INSERT INTO
+                    resep_details
+                    (
+                        created_at,
+                        id_resep,
+                        id_obat,
+                        qty,
+                        aturan_pakai
+                    )
+                VALUES
+                    (
+                        NOW(),
+                        '". $this->db->escape_str($id_resep) ."',
+                        '". $this->db->escape_str($id_obat) ."',
+                        '". $this->db->escape_str($qty) ."',
+                        '". $this->db->escape_str($aturan_pakai) ."'
+                    )
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _addResep()";
+            exit;
+        }
+    }
     function _editAddedResep($id) {}
-    function _deleteAddedResep($id) {}
+    function _deleteAddedResep($id)
+    {
+        $q = "DELETE FROM resep_details WHERE id = '$id'";
+        
+        if ($this->db->simple_query($q)) {
+            echo '{ "text": "Berhasil menghapus." }';
+        } else {
+            echo '{ "text": "Gagal menghapus." }';
+        }
+    }
+
+    function _cekResep($id_antrian)
+    {
+        $q = $this->db->query("SELECT * FROM reseps WHERE id_antrian = '$id_antrian'");
+        return empty($q->row_array()) ? false : true;
+    }
+
+    function _addResepBaru($id_antrian, $id_dokter)
+    {
+        $q =    "INSERT INTO
+                    reseps
+                    (
+                        created_at,
+                        id_antrian,
+                        id_dokter
+                    )
+                VALUES
+                    (
+                        NOW(),
+                        '". $this->db->escape_str($id_antrian) ."',
+                        '". $this->db->escape_str($id_dokter) ."'
+                    )
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _addTindakanBaru()";
+            exit;
+        }
+    }
+    function _getIdResep($id_antrian)
+    {
+        echo "masuk _getIdTindakanPasien<br>";
+        $q = $this->db->query("SELECT id FROM reseps WHERE id_antrian = '$id_antrian' ORDER BY id DESC");
+        return $q->row()->id;
+    }
 
     
     /* TINDAKAN */
@@ -138,10 +223,6 @@ class Tindakan_medis_model extends CI_Model {
 
     function _addTindakan($id_tindakan_pasien, $id_biaya_medis, $keterangan_tindakan_pasien)
     {
-        // echo "id_tp: " . $id_tindakan_pasien . "<br>";
-        // echo "id   : " . $id_biaya_medis . "<br>";
-        // echo "ket  : " . $keterangan_tindakan_pasien . "<br>";
-
         $q =    "INSERT INTO
                     tindakan_pasien_detail
                     (
@@ -215,6 +296,9 @@ class Tindakan_medis_model extends CI_Model {
         $q = $this->db->query("SELECT id FROM tindakan_pasien WHERE id_antrian = '$id_antrian' ORDER BY id DESC");
         return $q->row()->id;
     }
+
+
+    /* SIMPAN TINDAKAN MEDIS */
 
     function _simpanTindakanMedis($id_tindakan_pasien, $diagnosa, $tindak_lanjut, $keterangan_tindak_lanjut)
     {
