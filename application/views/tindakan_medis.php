@@ -373,7 +373,7 @@
                         
 
                         <!-- Ubah Data -->
-                        <div id="form" style="/* display: none; */">
+                        <div id="form">
                           <div class="d-flex justify-content-between align-items-center">
                             <p class="h4">Ubah Tindakan</p>
                           </div>
@@ -423,14 +423,18 @@
                                 <th>Kuantitas</th>
                                 <th>Satuan</th>
                                 <th>Aturan Pakai</th>
+                                <th>Harga Jual Obat</th>
                                 <th>Aksi</th>
                               </tr>
                             </thead>
                             
                             <tbody>
                               <?php
+                                $totalBiayaResep = 0;
                                 $no = 1;
-                                foreach($_getAddedResep as $gar) { ?>
+                                foreach($_getAddedResep as $gar) {
+                                  $totalBiayaResep += $gar->harga_jual_obat;
+                                  ?>
                                   <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $gar->kode_obat ?></td>
@@ -439,9 +443,9 @@
                                     <td><?= $gar->qty ?></td>
                                     <td><?= $gar->nama_satuan ?></td>
                                     <td><?= $gar->aturan_pakai ?></td>
+                                    <td>Rp. <?= number_format(intval($gar->harga_jual_obat), 2, ',', '.') ?></td>
                                     <td>
                                       <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
-                                      <!-- <a href="<?= base_url('tindakan-medis#') ?>" onclick="return confirm('Anda yakin ingin menghapus?')"><button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a> -->
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedResep?id_resep_detail=' . $gar->id_resep_detail) ?>')" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                       </button>
@@ -451,6 +455,14 @@
                                 }
                               ?>
                             </tbody>
+
+                            <tfoot>
+                              <tr class="font-weight-bold">
+                                <td colspan="7">Total</td>
+                                <td>Rp. <?= number_format(intval($totalBiayaResep), 2, ',', '.') ?></td>
+                                <td></td>
+                              </tr>
+                            </tfoot>
                           </table>
                         </div>
                         

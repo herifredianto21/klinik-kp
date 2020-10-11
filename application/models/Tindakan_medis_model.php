@@ -42,7 +42,7 @@ class Tindakan_medis_model extends CI_Model {
     {
         $q = "SELECT
                 obats.id, obats.kode_obat, obats.nama_obat, satuans.nama_satuan,
-                obats.harga_jual_obat, obats.harga_pokok_obat
+                obats.harga_jual_obat
             FROM 
                 obats
             JOIN
