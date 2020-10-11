@@ -250,7 +250,21 @@ class Tindakan_medis_model extends CI_Model {
         */
     }
 
-    function _editAddedTindakan() {}
+    function _editAddedTindakan($id_tindakan_pasien_detail, $keterangan_tindakan_pasien)
+    {
+        $q =    "UPDATE
+                    tindakan_pasien_detail
+                SET
+                    updated_at = NOW(),
+                    keterangan_tindakan_pasien = '". $this->db->escape_str($keterangan_tindakan_pasien) ."'
+                WHERE
+                    id = '$id_tindakan_pasien_detail'
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _editAddedTindakan()";
+            exit;
+        }
+    }
 
     function _deleteAddedTindakan($id)
     {

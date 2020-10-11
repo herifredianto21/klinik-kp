@@ -93,7 +93,28 @@ class Tindakan_medis extends CI_Controller {
         redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
     }
 
-    function _editAddedTindakan() {}
+    public function editAddedTindakan()
+    {
+        $langkah = $_GET['langkah'];
+        $id_antrian = $_GET['id_antrian'];
+        $id_dokter = $_GET['id_dokter'];
+        $nama_pasien = $_GET['nama_pasien'];
+        $nama_dokter = $_GET['nama_dokter'];
+        $diagnosa = $_GET['diagnosa'];
+        $tindak_lanjut = $_GET['tindak_lanjut'];
+        $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
+
+        // Data
+        $id_tindakan_pasien_detail = $this->input->post('id_tindakan_pasien_detail');
+        $keterangan_tindakan_pasien = $this->input->post('keterangan_tindakan_pasien');
+
+        $this->model->_editAddedTindakan($id_tindakan_pasien_detail, $keterangan_tindakan_pasien);
+
+        echo $id_tindakan_pasien_detail;
+        echo $keterangan_tindakan_pasien;
+
+        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
+    }
     
     public function deleteAddedTindakan()
     {

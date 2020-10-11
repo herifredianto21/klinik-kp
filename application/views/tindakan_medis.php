@@ -296,9 +296,9 @@
                                     <td><?= $gat->keterangan_tindakan_pasien ?></td>
                                     <td>Rp. <?= number_format(intval($gat->biaya_medis), 2, ',', '.') ?></td>
                                     <td>
-                                      <a href="<?= base_url('tindakan-medis#') ?>">
-                                        <button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button>
-                                      </a>
+                                      <button type="button" onclick="selectDataToEditTindakan('<?= $gat->id_tindakan_pasien_detail ?>', '<?= $gat->nama_biaya_medis ?>', '<?= $this->db->escape_str($gat->keterangan_tindakan_pasien) ?>')" class="btn btn-info btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                      </button>
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedTindakan?id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail) ?>')" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                       </button>
@@ -326,7 +326,7 @@
                             <p class="h4">Tambah Tindakan</p>
                           </div>
 
-                          <form onsubmit="kirim();" id="formInsertTindakan" action="<?= base_url('tindakan-medis/addTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
+                          <form id="formInsertTindakan" action="<?= base_url('tindakan-medis/addTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
                             <table class="table table-striped table-hover">
                               <thead class="text-primary">
                                 <tr>
@@ -378,15 +378,19 @@
                             <p class="h4">Ubah Tindakan</p>
                           </div>
 
-                          <form onsubmit="kirim();" id="formInsertTindakan" action="<?= base_url('tindakan-medis/addTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
+                          <form id="formUpdateTindakan" action="<?= base_url('tindakan-medis/addTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
                             
-                            <div class="form-group">
-                              <label for="tindakan">Tindakan</label>
-                              <input type="text" name="" class="form-control" id="tindakan" value="tindakan" readonly>
+                          <div class="form-group">
+                              <label for="id_tindakan_pasien_detail">id_tindakan_pasien_detail</label>
+                              <input type="text" name="id_tindakan_pasien_detail" id="id_tindakan_pasien_detail" class="form-control" readonly required>
                             </div>
                             <div class="form-group">
-                              <label for="keterangan_tindakan">Keterangan</label>
-                              <textarea name="" class="form-control" id="keterangan_tindakan"></textarea>
+                              <label for="nama_biaya_medis">Tindakan</label>
+                              <input type="text" name="nama_biaya_medis" id="nama_biaya_medis" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="keterangan_tindakan_pasien">Keterangan</label>
+                              <textarea name="keterangan_tindakan_pasien" id="keterangan_tindakan_pasien" class="form-control"></textarea>
                             </div>
 
                             <div class="row">
@@ -445,7 +449,9 @@
                                     <td><?= $gar->aturan_pakai ?></td>
                                     <td>Rp. <?= number_format(intval($gar->harga_jual_obat), 2, ',', '.') ?></td>
                                     <td>
-                                      <a href="<?= base_url('tindakan-medis#') ?>"><button class="btn btn-info btn-sm"><i class="fas fa-edit"></i></button></a>
+                                      <button type="button" onclick="selectDataToEditResep('<?= $gar->kode_obat ?>')" class="btn btn-info btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                      </button>
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedResep?id_resep_detail=' . $gar->id_resep_detail) ?>')" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i>
                                       </button>

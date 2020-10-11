@@ -13,6 +13,7 @@ var id_antrian,
 $(document).ready(function() {
     updateUrlForButtonSimpan();
     updateUrlForInsertTindakan();
+    updateUrlForUpdateTindakan();
     updateUrlForInsertResep();
 
     // DataTables
@@ -94,6 +95,7 @@ $(document).ready(function() {
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
     });
     $('#selectTindakLanjut').on('change', function() {
@@ -101,6 +103,7 @@ $(document).ready(function() {
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
     });
     $('#textareaKeteranganTindakLanjut').on('keyup change', function() {
@@ -108,16 +111,25 @@ $(document).ready(function() {
         
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
     });
     $('#aSimpanTindakanMedis').on('click', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
     });
     $('#formInsertTindakan').on('submit', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
+        updateUrlForInsertResep();
+    });
+    $('#formUpdateTindakan').on('submit', function() {
+        updateUrlForButtonSimpan();
+        updateUrlForInsertTindakan();
+        updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
     });
 });
@@ -178,6 +190,20 @@ var updateUrlForInsertTindakan = function() {
     $('#formInsertTindakan').attr('action', newUrl);
 }
 
+var updateUrlForUpdateTindakan = function() {
+    id_antrian = getUrlParameter('id_antrian') !== undefined ? getUrlParameter('id_antrian') : '';
+    id_dokter = getUrlParameter('id_dokter') !== undefined ? getUrlParameter('id_dokter') : '';
+    nama_pasien = getUrlParameter('nama_pasien') !== undefined ? getUrlParameter('nama_pasien') : '';
+    nama_dokter = getUrlParameter('nama_dokter') !== undefined ? getUrlParameter('nama_dokter') : '';
+    diagnosa = getUrlParameter('diagnosa') !== undefined ? getUrlParameter('diagnosa') : '';
+    tindak_lanjut = getUrlParameter('tindak_lanjut') !== undefined ? getUrlParameter('tindak_lanjut') : '';
+    keterangan_tindak_lanjut = getUrlParameter('keterangan_tindak_lanjut') !== undefined ? getUrlParameter('keterangan_tindak_lanjut') : '';
+    
+    newUrl = baseurl + 'tindakan-medis/editAddedTindakan?langkah=tindakan&id_antrian=' + id_antrian + '&id_dokter=' + id_dokter + '&nama_pasien=' + nama_pasien + '&nama_dokter=' + nama_dokter + '&diagnosa=' + diagnosa + '&tindak_lanjut=' + tindak_lanjut + '&keterangan_tindak_lanjut=' + keterangan_tindak_lanjut;
+
+    $('#formUpdateTindakan').attr('action', newUrl);
+}
+
 var updateUrlForInsertResep = function() {
     id_antrian = getUrlParameter('id_antrian') !== undefined ? getUrlParameter('id_antrian') : '';
     id_dokter = getUrlParameter('id_dokter') !== undefined ? getUrlParameter('id_dokter') : '';
@@ -209,4 +235,10 @@ var doInBackground = function(url) {
             location.reload();
         }});
     }
+}
+
+var selectDataToEditTindakan = function(id_tindakan_pasien_detail, nama_biaya_medis, keterangan_tindakan_pasien) {
+    $('#formUpdateTindakan input[name=id_tindakan_pasien_detail]').val(id_tindakan_pasien_detail);
+    $('#formUpdateTindakan input[name=nama_biaya_medis]').val(nama_biaya_medis);
+    $('#formUpdateTindakan textarea[name=keterangan_tindakan_pasien]').val(keterangan_tindakan_pasien);
 }
