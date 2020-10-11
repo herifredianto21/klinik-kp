@@ -203,31 +203,10 @@ var updateUrlForButtonSimpan = function() {
     $('#aSimpanTindakanMedis').attr('href', newUrl);
 }
 
-const request = (url, callback) => {
-    const request = new XMLHttpRequest();
-
-    request.addEventListener('readystatechange', () => {
-        if (request.readyState === 4 && request.status === 200) {
-            const data = JSON.parse(request.responseText);
-            callback(undefined, data);
-        } else if (request.readyState === 4) {
-            callback('could not fetch data', undefined);
-        }
-    })
-
-    request.open('GET', url);
-    request.send();
-}
-
 var doInBackground = function(url) {
     if (confirm('Apakah Anda yakin ingin menghapus?')) {
-        request(url, (err, data) => {
-            if (err) {
-                console.log('err:', err);
-            } else {
-                // console.log('data:', data);
-                location.reload();
-            }
-        });
+        $.ajax({url: url, success: function(result) {
+            location.reload();
+        }});
     }
 }
