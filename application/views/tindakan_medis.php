@@ -423,9 +423,9 @@
                                 <th>No</th>
                                 <th>Kode Obat</th>
                                 <th>Nama</th>
-                                <th>Kategori</th>
+                                <!-- <th>Kategori</th> -->
                                 <th>Kuantitas</th>
-                                <th>Satuan</th>
+                                <!-- <th>Satuan</th> -->
                                 <th>Aturan Pakai</th>
                                 <th>Biaya</th>
                                 <th>Aksi</th>
@@ -445,9 +445,9 @@
                                     <td><?= $no++ ?></td>
                                     <td><?= $gar->kode_obat ?></td>
                                     <td><?= $gar->nama_obat ?></td>
-                                    <td><?= $gar->kategori ?></td>
+                                    <!-- <td><?= $gar->kategori ?></td> -->
                                     <td><?= $gar->qty ?></td>
-                                    <td><?= $gar->nama_satuan ?></td>
+                                    <!-- <td><?= $gar->nama_satuan ?></td> -->
                                     <td><?= $gar->aturan_pakai ?></td>
                                     <td>Rp. <?= number_format(intval($harga_obat), 2, ',', '.') ?></td>
                                     <td>
@@ -460,13 +460,16 @@
                                     </td>
                                   </tr>
                                   <?php
+                                  /* 
+                                  TODO: tanya soal kategori dan nama_satuan
+                                  */
                                 }
                               ?>
                             </tbody>
 
                             <tfoot>
                               <tr class="font-weight-bold">
-                                <td colspan="7">Total</td>
+                                <td colspan="5">Total</td>
                                 <td>Rp. <?= number_format(intval($totalBiayaResep), 2, ',', '.') ?></td>
                                 <td></td>
                               </tr>
