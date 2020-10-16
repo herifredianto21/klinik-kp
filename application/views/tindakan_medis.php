@@ -266,7 +266,7 @@
                       <div id="langkahTindakan" class="tab-pane fade <?= $langkah == 'tindakan' ? $show : null ?>">
                         
                         <!-- Tampil Data -->
-                        <div id="table">
+                        <div id="table" style="overflow-y: auto;">
                           <div class="d-flex justify-content-between align-items-center">
                             <p class="h4">Tindakan</p>
                             <button class="btn btn-primary btn-sm" id="btnShowForm"><i class="fas fa-plus"></i> Tambah Tindakan</button>
@@ -296,7 +296,7 @@
                                     <td><?= $gat->keterangan_tindakan_pasien ?></td>
                                     <td>Rp. <?= number_format(intval($gat->biaya_medis), 2, ',', '.') ?></td>
                                     <td>
-                                      <button type="button" onclick="selectDataToEditTindakan('<?= $gat->id_tindakan_pasien_detail ?>', '<?= $gat->nama_biaya_medis ?>', '<?= $this->db->escape_str($gat->keterangan_tindakan_pasien) ?>')" class="btn btn-info btn-sm">
+                                      <button type="button" id="btnEdit" onclick="selectDataToEditTindakan('<?= $gat->id_tindakan_pasien_detail ?>', '<?= $gat->nama_biaya_medis ?>', '<?= $this->db->escape_str($gat->keterangan_tindakan_pasien) ?>')" class="btn btn-info btn-sm">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedTindakan?id_tindakan_pasien_detail=' . $gat->id_tindakan_pasien_detail) ?>')" class="btn btn-danger btn-sm">
@@ -373,14 +373,14 @@
                         
 
                         <!-- Ubah Data -->
-                        <div id="form">
+                        <div id="edit" style="display: none;">
                           <div class="d-flex justify-content-between align-items-center">
                             <p class="h4">Ubah Tindakan</p>
                           </div>
 
-                          <form id="formUpdateTindakan" action="<?= base_url('tindakan-medis/addTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
+                          <form id="formUpdateTindakan" action="<?= base_url('tindakan-medis/editTindakan?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
                             
-                          <div class="form-group">
+                            <div class="form-group">
                               <label for="id_tindakan_pasien_detail">id_tindakan_pasien_detail</label>
                               <input type="text" name="id_tindakan_pasien_detail" id="id_tindakan_pasien_detail" class="form-control" readonly required>
                             </div>
@@ -411,7 +411,7 @@
                       <div id="langkahResep" class="tab-pane fade <?= $langkah == 'resep' ? $show : null ?>">
                         
                         <!-- Tampil Data -->
-                        <div id="table">
+                        <div id="table" style="overflow-y: auto;">
                           <div class="d-flex justify-content-between align-items-center">
                             <p class="h4">Resep</p>
                             <button class="btn btn-primary btn-sm" id="btnShowForm"><i class="fas fa-plus"></i> Tambah Resep</button>
@@ -427,7 +427,7 @@
                                 <th>Kuantitas</th>
                                 <th>Satuan</th>
                                 <th>Aturan Pakai</th>
-                                <th>Harga Jual Obat</th>
+                                <th>Biaya</th>
                                 <th>Aksi</th>
                               </tr>
                             </thead>
@@ -437,7 +437,9 @@
                                 $totalBiayaResep = 0;
                                 $no = 1;
                                 foreach($_getAddedResep as $gar) {
-                                  $totalBiayaResep += $gar->harga_jual_obat;
+                                  $harga_obat = 0;
+                                  $harga_obat = $gar->harga_jual_obat * $gar->qty;
+                                  $totalBiayaResep += $harga_obat;
                                   ?>
                                   <tr>
                                     <td><?= $no++ ?></td>
@@ -447,9 +449,9 @@
                                     <td><?= $gar->qty ?></td>
                                     <td><?= $gar->nama_satuan ?></td>
                                     <td><?= $gar->aturan_pakai ?></td>
-                                    <td>Rp. <?= number_format(intval($gar->harga_jual_obat), 2, ',', '.') ?></td>
+                                    <td>Rp. <?= number_format(intval($harga_obat), 2, ',', '.') ?></td>
                                     <td>
-                                      <button type="button" onclick="selectDataToEditResep('<?= $gar->kode_obat ?>')" class="btn btn-info btn-sm">
+                                      <button type="button" id="btnEdit" onclick="selectDataToEditResep('<?= $gar->id_resep_detail ?>', '<?= $gar->kode_obat ?>', '<?= $gar->nama_obat ?>', '<?= $gar->kategori ?>', '<?= $gar->qty ?>', '<?= $gar->aturan_pakai ?>')" class="btn btn-info btn-sm">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedResep?id_resep_detail=' . $gar->id_resep_detail) ?>')" class="btn btn-danger btn-sm">
@@ -537,8 +539,53 @@
                           </form>
                         </div>
 
-                      </div>
+                        
+                        <!-- Ubah Data -->
+                        <div id="edit" style="display: none;">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <p class="h4">Ubah Resep</p>
+                          </div>
 
+                          <form id="formUpdateResep" action="<?= base_url('tindakan-medis/editAddedResep?langkah=tindakan&id_antrian=' . $_GET['id_antrian']) ?>" method="post">
+                            
+                            <div class="form-group">
+                              <label for="id_resep_detail">id_resep_detail</label>
+                              <input type="text" name="id_resep_detail" id="id_resep_detail" class="form-control" readonly required>
+                            </div>
+                            <div class="form-group">
+                              <label for="kode_obat">Kode Obat</label>
+                              <input type="text" name="kode_obat" id="kode_obat" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="nama_obat">Nama Obat</label>
+                              <input type="text" name="nama_obat" id="nama_obat" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="kategori">Kategori</label>
+                              <input type="text" name="kategori" id="kategori" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="qty">Kuantitas (pcs)</label>
+                              <input type="text" name="qty" id="qty" class="form-control">
+                            </div>
+                            <div class="form-group">
+                              <label for="aturan_pakai">Aturan Pakai</label>
+                              <input type="text" name="aturan_pakai" id="aturan_pakai" class="form-control">
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-save"></i> Save</button>
+                              </div>
+                              <div class="col-md-2">
+                                <button type="button" id="btnCancel" class="btn btn-danger btn-block"><i class="fa fa-times"></i> Cancel</button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+
+                      </div>
+                      
 
                       <!-- Langkah Tindak Lanjut -->
                       <div id="langkahTindakLanjut" class="tab-pane fade <?= $langkah == 'tindak_lanjut' ? $show : null ?>">

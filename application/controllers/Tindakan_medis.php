@@ -164,7 +164,31 @@ class Tindakan_medis extends CI_Controller {
         redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
     }
 
-    function editAddedResep() {}
+    function editAddedResep()
+    {
+        $langkah = $_GET['langkah'];
+        $id_antrian = $_GET['id_antrian'];
+        $id_dokter = $_GET['id_dokter'];
+        $nama_pasien = $_GET['nama_pasien'];
+        $nama_dokter = $_GET['nama_dokter'];
+        $diagnosa = $_GET['diagnosa'];
+        $tindak_lanjut = $_GET['tindak_lanjut'];
+        $keterangan_tindak_lanjut = $_GET['keterangan_tindak_lanjut'];
+
+        // Data
+        $id_resep_detail = $this->input->post('id_resep_detail');
+        $qty = $this->input->post('qty');
+        $aturan_pakai = $this->input->post('aturan_pakai');
+
+        $this->model->_editAddedResep($id_resep_detail, $qty, $aturan_pakai);
+
+        echo $id_resep_detail;
+        echo $qty;
+        echo $aturan_pakai;
+
+        redirect(base_url() . 'tindakan-medis?langkah=' . $langkah . '&id_antrian=' . $id_antrian . '&id_dokter=' . $id_dokter . '&nama_pasien=' . $nama_pasien . '&nama_dokter=' . $nama_dokter . '&diagnosa=' . $diagnosa . '&tindak_lanjut=' . $tindak_lanjut . '&keterangan_tindak_lanjut=' . $keterangan_tindak_lanjut);
+    }
+    
     function deleteAddedResep()
     {
         $id_resep_detail = $_GET['id_resep_detail'];

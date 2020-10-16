@@ -121,7 +121,24 @@ class Tindakan_medis_model extends CI_Model {
             exit;
         }
     }
-    function _editAddedResep($id) {}
+    
+    function _editAddedResep($id, $qty, $aturan_pakai)
+    {
+        $q =    "UPDATE
+                    resep_details
+                SET
+                    updated_at = NOW(),
+                    qty = '". $this->db->escape_str($qty) ."',
+                    aturan_pakai = '". $this->db->escape_str($aturan_pakai) ."'
+                WHERE
+                    id = '$id'
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _editAddedTindakan()";
+            exit;
+        }
+    }
+
     function _deleteAddedResep($id)
     {
         $q = "DELETE FROM resep_details WHERE id = '$id'";
@@ -306,7 +323,6 @@ class Tindakan_medis_model extends CI_Model {
     }
     function _getIdTindakanPasien($id_antrian)
     {
-        // echo "masuk _getIdTindakanPasien<br>";
         $q = $this->db->query("SELECT id FROM tindakan_pasien WHERE id_antrian = '$id_antrian' ORDER BY id DESC");
         return $q->row()->id;
     }

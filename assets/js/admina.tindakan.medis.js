@@ -15,6 +15,7 @@ $(document).ready(function() {
     updateUrlForInsertTindakan();
     updateUrlForUpdateTindakan();
     updateUrlForInsertResep();
+    updateUrlForUpdateResep();
 
     // DataTables
     var dataTables = $('table').dataTable();
@@ -72,20 +73,34 @@ $(document).ready(function() {
     // Resep
     $('#langkahResep #btnShowForm').click(function() {
         $('#langkahResep #table').fadeOut();
+        $('#langkahResep #edit').fadeOut();
         $('#langkahResep #form').fadeIn();
+    });
+    $('#langkahResep #btnEdit').click(function() {
+        $('#langkahResep #table').fadeOut();
+        $('#langkahResep #form').fadeOut();
+        $('#langkahResep #edit').fadeIn();
     });
     $('#langkahResep #btnCancel').click(function() {
         $('#langkahResep #form').fadeOut();
+        $('#langkahResep #edit').fadeOut();
         $('#langkahResep #table').fadeIn();
     });
     
     // Tindakan
     $('#langkahTindakan #btnShowForm').click(function() {
         $('#langkahTindakan #table').fadeOut();
+        $('#langkahTindakan #edit').fadeOut();
         $('#langkahTindakan #form').fadeIn();
+    });
+    $('#langkahTindakan #btnEdit').click(function() {
+        $('#langkahTindakan #table').fadeOut();
+        $('#langkahTindakan #form').fadeOut();
+        $('#langkahTindakan #edit').fadeIn();
     });
     $('#langkahTindakan #btnCancel').click(function() {
         $('#langkahTindakan #form').fadeOut();
+        $('#langkahTindakan #edit').fadeOut();
         $('#langkahTindakan #table').fadeIn();
     });
     
@@ -97,6 +112,7 @@ $(document).ready(function() {
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
     $('#selectTindakLanjut').on('change', function() {
         changeUrlParameter('tindak_lanjut', $('#selectTindakLanjut').val());
@@ -105,6 +121,7 @@ $(document).ready(function() {
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
     $('#textareaKeteranganTindakLanjut').on('keyup change', function() {
         changeUrlParameter('keterangan_tindak_lanjut', $('#textareaKeteranganTindakLanjut').val());
@@ -113,24 +130,28 @@ $(document).ready(function() {
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
     $('#aSimpanTindakanMedis').on('click', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
     $('#formInsertTindakan').on('submit', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
     $('#formUpdateTindakan').on('submit', function() {
         updateUrlForButtonSimpan();
         updateUrlForInsertTindakan();
         updateUrlForUpdateTindakan();
         updateUrlForInsertResep();
+        updateUrlForUpdateResep();
     });
 });
 
@@ -218,6 +239,20 @@ var updateUrlForInsertResep = function() {
     $('#formInsertResep').attr('action', newUrl);
 }
 
+var updateUrlForUpdateResep = function() {
+    id_antrian = getUrlParameter('id_antrian') !== undefined ? getUrlParameter('id_antrian') : '';
+    id_dokter = getUrlParameter('id_dokter') !== undefined ? getUrlParameter('id_dokter') : '';
+    nama_pasien = getUrlParameter('nama_pasien') !== undefined ? getUrlParameter('nama_pasien') : '';
+    nama_dokter = getUrlParameter('nama_dokter') !== undefined ? getUrlParameter('nama_dokter') : '';
+    diagnosa = getUrlParameter('diagnosa') !== undefined ? getUrlParameter('diagnosa') : '';
+    tindak_lanjut = getUrlParameter('tindak_lanjut') !== undefined ? getUrlParameter('tindak_lanjut') : '';
+    keterangan_tindak_lanjut = getUrlParameter('keterangan_tindak_lanjut') !== undefined ? getUrlParameter('keterangan_tindak_lanjut') : '';
+    
+    newUrl = baseurl + 'tindakan-medis/editAddedResep?langkah=resep&id_antrian=' + id_antrian + '&id_dokter=' + id_dokter + '&nama_pasien=' + nama_pasien + '&nama_dokter=' + nama_dokter + '&diagnosa=' + diagnosa + '&tindak_lanjut=' + tindak_lanjut + '&keterangan_tindak_lanjut=' + keterangan_tindak_lanjut;
+
+    $('#formUpdateResep').attr('action', newUrl);
+}
+
 var updateUrlForButtonSimpan = function() {
     id_antrian = getUrlParameter('id_antrian') !== undefined ? getUrlParameter('id_antrian') : '';
     diagnosa = getUrlParameter('diagnosa') !== undefined ? getUrlParameter('diagnosa') : '';
@@ -241,4 +276,13 @@ var selectDataToEditTindakan = function(id_tindakan_pasien_detail, nama_biaya_me
     $('#formUpdateTindakan input[name=id_tindakan_pasien_detail]').val(id_tindakan_pasien_detail);
     $('#formUpdateTindakan input[name=nama_biaya_medis]').val(nama_biaya_medis);
     $('#formUpdateTindakan textarea[name=keterangan_tindakan_pasien]').val(keterangan_tindakan_pasien);
+}
+
+var selectDataToEditResep = function(id_resep_detail, kode_obat, nama_obat, kategori, qty, aturan_pakai) {
+    $('#formUpdateResep input[name=id_resep_detail]').val(id_resep_detail);
+    $('#formUpdateResep input[name=kode_obat]').val(kode_obat);
+    $('#formUpdateResep input[name=nama_obat]').val(nama_obat);
+    $('#formUpdateResep input[name=kategori]').val(kategori);
+    $('#formUpdateResep input[name=qty]').val(qty);
+    $('#formUpdateResep input[name=aturan_pakai]').val(aturan_pakai);
 }
