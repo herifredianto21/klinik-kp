@@ -90,7 +90,7 @@ class Tindakan_medis extends CI_Controller {
             $counter = 0;
             foreach($pilih as $key=>$value){
                 if ($value == 'checked') {
-                    $this->model->_addTindakan($id_tindakan_pasien, $id_biaya_medis[$counter], $keterangan_tindakan_pasien[$i]);
+                    $this->model->_addTindakan($id_tindakan_pasien, $id_biaya_medis[$counter], $keterangan_tindakan_pasien[$counter]);
                 }    
                 $counter++;
             }
