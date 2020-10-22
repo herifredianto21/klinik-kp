@@ -81,12 +81,18 @@ class Tindakan_medis extends CI_Controller {
         // Get id_tindakan_pasien
         $id_tindakan_pasien = $this->model->_getIdTindakanPasien($id_antrian);
 
-        echo "Jumlah data: " . count($pilih);
-
+        // echo "Jumlah data: " . count($pilih);
+        // echo  json_encode($pilih);
+        // echo json_encode($id_biaya_medis);
+        // exit;
         // Insert data sebanyak checkbox yang dipilih
-        for ($i=0; $i<=count($pilih)-1; $i++) {
-            if ($pilih[$i] == 'checked') {
-                $this->model->_addTindakan($id_tindakan_pasien, $id_biaya_medis[$i], $keterangan_tindakan_pasien[$i]);
+        if(!Empty($pilih)){
+            $counter = 0;
+            foreach($pilih as $key=>$value){
+                if ($value == 'checked') {
+                    $this->model->_addTindakan($id_tindakan_pasien, $id_biaya_medis[$counter], $keterangan_tindakan_pasien[$i]);
+                }    
+                $counter++;
             }
         }
 
