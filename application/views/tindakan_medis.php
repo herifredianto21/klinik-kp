@@ -437,9 +437,7 @@
                                 $totalBiayaResep = 0;
                                 $no = 1;
                                 foreach($_getAddedResep as $gar) {
-                                  $harga_obat = 0;
-                                  $harga_obat = $gar->harga_jual_obat * $gar->qty;
-                                  $totalBiayaResep += $harga_obat;
+                                  $totalBiayaResep += $gar->total_harga;
                                   ?>
                                   <tr>
                                     <td><?= $no++ ?></td>
@@ -449,9 +447,9 @@
                                     <td><?= $gar->qty ?></td>
                                     <!-- <td><?= $gar->nama_satuan ?></td> -->
                                     <td><?= $gar->aturan_pakai ?></td>
-                                    <td>Rp. <?= number_format(intval($harga_obat), 2, ',', '.') ?></td>
+                                    <td>Rp. <?= number_format(intval($gar->total_harga), 2, ',', '.') ?></td>
                                     <td>
-                                      <button type="button" id="btnEdit" onclick="selectDataToEditResep('<?= $gar->id_resep_detail ?>', '<?= $gar->kode_obat ?>', '<?= $gar->nama_obat ?>', '<?= $gar->kategori ?>', '<?= $gar->qty ?>', '<?= $gar->aturan_pakai ?>')" class="btn btn-info btn-sm">
+                                      <button type="button" id="btnEdit" onclick="selectDataToEditResep('<?= $gar->id_resep_detail ?>', '<?= $gar->kode_obat ?>', '<?= $gar->nama_obat ?>', '<?= $gar->kategori ?>', '<?= $gar->harga_jual_obat ?>', '<?= $gar->qty ?>', '<?= $gar->aturan_pakai ?>')" class="btn btn-info btn-sm">
                                         <i class="fas fa-edit"></i>
                                       </button>
                                       <button type="button" onclick="doInBackground('<?= base_url('tindakan-medis/deleteAddedResep?id_resep_detail=' . $gar->id_resep_detail) ?>')" class="btn btn-danger btn-sm">
@@ -566,6 +564,10 @@
                             <div class="form-group">
                               <label for="kategori">Kategori</label>
                               <input type="text" name="kategori" id="kategori" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                              <label for="harga_jual_obat">Harga Jual Obat</label>
+                              <input type="text" name="harga_jual_obat" id="harga_jual_obat" class="form-control" readonly>
                             </div>
                             <div class="form-group">
                               <label for="qty">Kuantitas (pcs)</label>

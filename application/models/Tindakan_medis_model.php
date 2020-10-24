@@ -77,7 +77,7 @@ class Tindakan_medis_model extends CI_Model {
     {
         $q = "SELECT 
                 reseps.id, obats.kode_obat, obats.nama_obat, obats.harga_jual_obat, 'kategori (belum)' AS kategori, 
-                resep_details.id AS id_resep_detail, resep_details.qty, satuans.nama_satuan, resep_details.aturan_pakai
+                resep_details.id AS id_resep_detail, resep_details.qty, resep_details.total_harga, satuans.nama_satuan, resep_details.aturan_pakai
             FROM 
                 resep_details
             JOIN
@@ -95,7 +95,8 @@ class Tindakan_medis_model extends CI_Model {
         return $s;
     }
     /*mengambil data berdasarkan id dari tabel obats */
-    private function getDataHargaById ($id){
+    function _getObatById($id)
+    {
         $q = "SELECT *
             FROM
                 obats
@@ -108,7 +109,7 @@ class Tindakan_medis_model extends CI_Model {
 
     function _addResep($id_resep, $id_obat, $qty, $aturan_pakai)
     {
-        $tmpHargaObat = $this->getDataHargaById($id_obat);
+        $tmpHargaObat = $this->_getObatById($id_obat);
         if(empty($tmpHargaObat)) {
             echo "Error di _addResep()";
             exit;
@@ -123,7 +124,7 @@ class Tindakan_medis_model extends CI_Model {
                         id_resep,
                         id_obat,
                         qty,
-                        harga_jual_obat,
+                        total_harga,
                         aturan_pakai
                     )
                 VALUES
@@ -132,7 +133,7 @@ class Tindakan_medis_model extends CI_Model {
                         '". $this->db->escape_str($id_resep) ."',
                         '". $this->db->escape_str($id_obat) ."',
                         '". $this->db->escape_str($qty) ."',
-                        '". $qty * $tmpHargaObat->harga_jual_obat ."',
+                        '". $qty * $tmpHargaObat->total_harga ."',
                         '". $this->db->escape_str($aturan_pakai) ."'
                     )
                 ;";
@@ -142,25 +143,14 @@ class Tindakan_medis_model extends CI_Model {
         }
     }
 
-    private function getHargaJualObatById($id){
-        $q = "SELECT harga_jual_obat
-            FROM 
-                obats
-            WHERE 
-               id = '$id'";
-
-        $s = $this->db->query($q)->result();
-        if(empty($s)) return [];
-        return $s;
-    }
-
-    function _editAddedResep($id, $qty, $aturan_pakai)
+    function _editAddedResep($id, $qty, $harga_jual_obat, $aturan_pakai)
     {
         $q =    "UPDATE
                     resep_details
                 SET
                     updated_at = NOW(),
                     qty = '". $this->db->escape_str($qty) ."',
+                    total_harga = '". $this->db->escape_str($harga_jual_obat) * $this->db->escape_str($qty) ."',
                     aturan_pakai = '". $this->db->escape_str($aturan_pakai) ."'
                 WHERE
                     id = '$id'
@@ -271,7 +261,8 @@ class Tindakan_medis_model extends CI_Model {
     }
 
     /*mengambil data berdasarkan id dari tabel biaya_medis */
-    private function getDataBiayaById($id){
+    function _getBiayaMedisById($id)
+    {
         $q = "SELECT *
             FROM 
                 biaya_medis
@@ -285,7 +276,7 @@ class Tindakan_medis_model extends CI_Model {
 
     function _addTindakan($id_tindakan_pasien, $id_biaya_medis, $keterangan_tindakan_pasien)
     {
-        $tmpBiayaMedis = $this->getDataBiayaById($id_biaya_medis);
+        $tmpBiayaMedis = $this->_getBiayaMedisById($id_biaya_medis);
         if(empty($tmpBiayaMedis)) {
             echo "Error di _addTindakan()";
             exit;

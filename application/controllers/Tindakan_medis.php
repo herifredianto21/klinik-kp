@@ -192,12 +192,14 @@ class Tindakan_medis extends CI_Controller {
 
         // Data
         $id_resep_detail = $this->input->post('id_resep_detail');
+        $harga_jual_obat = $this->input->post('harga_jual_obat');
         $qty = $this->input->post('qty');
         $aturan_pakai = $this->input->post('aturan_pakai');
 
-        $this->model->_editAddedResep($id_resep_detail, $qty, $aturan_pakai);
+        $this->model->_editAddedResep($id_resep_detail, $qty, $harga_jual_obat, $aturan_pakai);
 
         echo $id_resep_detail;
+        echo $harga_jual_obat;
         echo $qty;
         echo $aturan_pakai;
 

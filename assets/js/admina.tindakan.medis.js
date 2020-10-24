@@ -278,11 +278,12 @@ var selectDataToEditTindakan = function(id_tindakan_pasien_detail, nama_biaya_me
     $('#formUpdateTindakan textarea[name=keterangan_tindakan_pasien]').val(keterangan_tindakan_pasien);
 }
 
-var selectDataToEditResep = function(id_resep_detail, kode_obat, nama_obat, kategori, qty, aturan_pakai) {
+var selectDataToEditResep = function(id_resep_detail, kode_obat, nama_obat, kategori, harga_jual_obat, qty, aturan_pakai) {
     $('#formUpdateResep input[name=id_resep_detail]').val(id_resep_detail);
     $('#formUpdateResep input[name=kode_obat]').val(kode_obat);
     $('#formUpdateResep input[name=nama_obat]').val(nama_obat);
     $('#formUpdateResep input[name=kategori]').val(kategori);
+    $('#formUpdateResep input[name=harga_jual_obat]').val(harga_jual_obat);
     $('#formUpdateResep input[name=qty]').val(qty);
     $('#formUpdateResep input[name=aturan_pakai]').val(aturan_pakai);
 }
