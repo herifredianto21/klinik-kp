@@ -161,9 +161,18 @@ class Tindakan_medis extends CI_Controller {
         echo $id_resep . "<br>";
 
         // Insert data sebanyak checkbox yang dipilih
-        for ($i=0; $i<=count($pilih)-1; $i++) {
-            if ($pilih[$i] == 'checked') {
-                $this->model->_addResep($id_resep, $id_obat[$i], $qty[$i], $aturan_pakai[$i]);
+        // for ($i=0; $i<=count($pilih)-1; $i++) {
+        //     if ($pilih[$i] == 'checked') {
+        //         $this->model->_addResep($id_resep, $id_obat[$i], $qty[$i], $aturan_pakai[$i]);
+        //     }
+        // }
+        if(!Empty($pilih)){
+            $counter = 0;
+            foreach($pilih as $key=>$value){
+                if ($value == 'checked') {
+                    $this->model->_addResep($id_resep, $id_obat[$counter], $qty[$counter], $aturan_pakai[$counter]);
+                }    
+                $counter++;
             }
         }
 

@@ -140,7 +140,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </div>
               </div>
 
-            <form id="formData" style="display: none;">
+            <form id="formData" style="/*display: none;*/">
               <div class="col-md-12 rincian-pembayaran">
                 <h4><u><strong>Rincian Pembayaran</strong></u></h4>
 

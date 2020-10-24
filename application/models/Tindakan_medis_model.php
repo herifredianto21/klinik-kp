@@ -41,8 +41,7 @@ class Tindakan_medis_model extends CI_Model {
     function _getObat($id_antrian = null) 
     {
         $q = "SELECT
-                obats.id, obats.kode_obat, obats.nama_obat, satuans.nama_satuan,
-                obats.harga_jual_obat
+                obats.id, obats.kode_obat, obats.nama_obat, satuans.nama_satuan, obats.harga_jual_obat
             FROM 
                 obats
             JOIN
@@ -54,7 +53,7 @@ class Tindakan_medis_model extends CI_Model {
         if ($id_antrian != null) {
             $q .= " AND obats.id NOT IN (
                         SELECT 
-                            obats.id
+                            resep_details.id_obat
                         FROM 
                             resep_details
                         JOIN
@@ -67,7 +66,7 @@ class Tindakan_medis_model extends CI_Model {
                             resep_details.deleted_at IS NULL AND
                             reseps.id_antrian = '$id_antrian'
                     )";
-}
+        }
 
         $s = $this->db->query($q)->result();
 
@@ -77,7 +76,7 @@ class Tindakan_medis_model extends CI_Model {
     function _getAddedResep($id_antrian = null) 
     {
         $q = "SELECT 
-                obats.id, obats.kode_obat, obats.nama_obat, obats.harga_jual_obat, 'kategori (belum)' AS kategori, 
+                reseps.id, obats.kode_obat, obats.nama_obat, obats.harga_jual_obat, 'kategori (belum)' AS kategori, 
                 resep_details.id AS id_resep_detail, resep_details.qty, satuans.nama_satuan, resep_details.aturan_pakai
             FROM 
                 resep_details
@@ -95,9 +94,28 @@ class Tindakan_medis_model extends CI_Model {
 
         return $s;
     }
+    /*mengambil data berdasarkan id dari tabel obats */
+    private function getDataHargaById ($id){
+        $q = "SELECT *
+            FROM
+                obats
+            WHERE
+                id = '$id'";
+        $s = $this->db->query($q)->result();
+        if(empty($s)) return [];
+        return $s;
+    }
 
     function _addResep($id_resep, $id_obat, $qty, $aturan_pakai)
     {
+        $tmpHargaObat = $this->getDataHargaById($id_obat);
+        if(empty($tmpHargaObat)) {
+            echo "Error di _addResep()";
+            exit;
+        }else{
+            $tmpHargaObat = $tmpHargaObat[0];
+        }                      
+
         $q =    "INSERT INTO
                     resep_details
                     (
@@ -105,6 +123,7 @@ class Tindakan_medis_model extends CI_Model {
                         id_resep,
                         id_obat,
                         qty,
+                        harga_jual_obat,
                         aturan_pakai
                     )
                 VALUES
@@ -113,6 +132,7 @@ class Tindakan_medis_model extends CI_Model {
                         '". $this->db->escape_str($id_resep) ."',
                         '". $this->db->escape_str($id_obat) ."',
                         '". $this->db->escape_str($qty) ."',
+                        '". $qty * $tmpHargaObat->harga_jual_obat ."',
                         '". $this->db->escape_str($aturan_pakai) ."'
                     )
                 ;";
@@ -121,7 +141,19 @@ class Tindakan_medis_model extends CI_Model {
             exit;
         }
     }
-    
+
+    private function getHargaJualObatById($id){
+        $q = "SELECT harga_jual_obat
+            FROM 
+                obats
+            WHERE 
+               id = '$id'";
+
+        $s = $this->db->query($q)->result();
+        if(empty($s)) return [];
+        return $s;
+    }
+
     function _editAddedResep($id, $qty, $aturan_pakai)
     {
         $q =    "UPDATE
