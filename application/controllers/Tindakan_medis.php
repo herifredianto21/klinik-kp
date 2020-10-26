@@ -159,6 +159,10 @@ class Tindakan_medis extends CI_Controller {
         // Get id_resep
         $id_resep = $this->model->_getIdResep($id_antrian);
         echo $id_resep . "<br>";
+        echo $id_obat . "<br>";
+        echo $qty . "<br>";
+        echo $aturan_pakai . "<br>";
+        print_r($pilih);
 
         // Insert data sebanyak checkbox yang dipilih
         // for ($i=0; $i<=count($pilih)-1; $i++) {
@@ -171,7 +175,7 @@ class Tindakan_medis extends CI_Controller {
             foreach($pilih as $key=>$value){
                 if ($value == 'checked') {
                     $this->model->_addResep($id_resep, $id_obat[$counter], $qty[$counter], $aturan_pakai[$counter]);
-                }    
+                }
                 $counter++;
             }
         }
@@ -234,8 +238,6 @@ class Tindakan_medis extends CI_Controller {
         
         // Get id_tindakan_pasien
         $id_tindakan_pasien = $this->model->_getIdTindakanPasien($id_antrian);
-        /* echo $id_tindakan_pasien;
-        exit; */
 
         $this->model->_simpanTindakanMedis($id_tindakan_pasien, $diagnosa, $tindak_lanjut, $keterangan_tindak_lanjut);
 

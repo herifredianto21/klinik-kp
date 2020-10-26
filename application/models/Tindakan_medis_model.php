@@ -17,7 +17,16 @@ class Tindakan_medis_model extends CI_Model {
             JOIN
                 jenis_pelayanans ON jenis_pelayanans.id = antrians.id_jenis_pelayanan
             WHERE
-                antrians.status_antrian = 'Selesai'
+                antrians.status_antrian = 'Selesai' AND
+                antrians.id NOT IN (
+                    SELECT 
+                        id_antrian
+                    FROM 
+                        tindakan_pasien
+                    WHERE 
+                        tindakan_pasien.deleted_at IS NULL AND
+                        tindakan_pasien.status_tindakan_pasien = 'Selesai'
+                )
             ORDER BY 
                 antrians.tgl_antrian ASC";
 
@@ -26,15 +35,6 @@ class Tindakan_medis_model extends CI_Model {
         return $s;
     }
 
-
-    /* DIAGNOSA */
-    
-    function _getDiagnosa() {}
-    function _getAddedDiagnosa() {}
-    function _addDiagnosa() {}
-    function _editAddedDiagnosa() {}
-    function _deleteAddedDiagnosa() {}
-    
     
     /* RESEP */
     
@@ -115,7 +115,11 @@ class Tindakan_medis_model extends CI_Model {
             exit;
         }else{
             $tmpHargaObat = $tmpHargaObat[0];
-        }                      
+        }
+        echo "total_harga:" . $qty * $tmpHargaObat->harga_jual_obat . "<br>";
+        // echo "tmpHargaObat:" . $tmpHargaObat[0]->harga_jual_obat;
+        // print_r($tmpHargaObat[0]);
+        // exit;
 
         $q =    "INSERT INTO
                     resep_details
@@ -133,7 +137,7 @@ class Tindakan_medis_model extends CI_Model {
                         '". $this->db->escape_str($id_resep) ."',
                         '". $this->db->escape_str($id_obat) ."',
                         '". $this->db->escape_str($qty) ."',
-                        '". $qty * $tmpHargaObat->total_harga ."',
+                        '". $qty * $tmpHargaObat->harga_jual_obat ."',
                         '". $this->db->escape_str($aturan_pakai) ."'
                     )
                 ;";
@@ -383,7 +387,8 @@ class Tindakan_medis_model extends CI_Model {
                 SET
                     diagnosa = '". $this->db->escape_str($diagnosa) ."',
                     tindak_lanjut = '". $this->db->escape_str($tindak_lanjut) ."',
-                    keterangan_tindak_lanjut = '". $this->db->escape_str($keterangan_tindak_lanjut) ."'
+                    keterangan_tindak_lanjut = '". $this->db->escape_str($keterangan_tindak_lanjut) ."',
+                    status_tindakan_pasien = 'Selesai'
                 WHERE
                     id = '". $this->db->escape_str($id_tindakan_pasien) ."'
                 ;";
