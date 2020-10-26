@@ -178,7 +178,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   </div>
                 </div>
                 <h4>2. Biaya Jasa / Medis / Pelayanan</h4>
-                <div class="wrap">
+                <table class="table table-striped table-hover">
+                  <thead class="text-primary">
+                    <tr>
+                      <th>Nama Tindakan</th>
+                      <th>Keterangan</th>
+                      <th>Harga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr role="row" class="ood">
+                      <td>Suntik</td>
+                      <td>Suntik Hamil</td>
+                      <td>Rp. 50.000,00</td>
+                    </tr>
+                    <tr role="row" class="ood">
+                      <td>Periksa Kehamilan</td>
+                      <td>-</td>
+                      <td>Rp. 50.000,00</td>
+                    </tr>
+                    <tr role="row" class="ood">
+                      <td>Buka IUD</td>
+                      <td>Oleh SPog</td>
+                      <td>Rp. 400.000,00</td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <!-- <div class="wrap">
                   <div class="row">
                     <table class="table table-borderless tablePelayanan">
                       <tbody>
@@ -198,9 +225,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div> -->
                 <h4>3. Biaya Obat</h4>
-                <div class="wrap">
+                <table class="table table-striped table-hover">
+                  <thead class="text-primary">
+                    <tr>
+                      <th>Nama Obat</th>
+                      <th>Qty</th>
+                      <th>Harga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr role="row" class="ood">
+                      <td>Amoxixilin</td>
+                      <td>2</td>
+                      <td>Rp. 50.000,00</td>
+                    </tr>
+                    <tr role="row" class="ood">
+                      <td>Bodrexin</td>
+                      <td>1</td>
+                      <td>Rp. 30.000,00</td>
+                    </tr>
+                    <tr role="row" class="ood">
+                      <td>Paracetamol</td>
+                      <td>3</td>
+                      <td>Rp. 85.000,00</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <div class="wrap">
                   <div class="row">
                     <table class="table table-borderless tableObat">
                       <thead>
@@ -236,7 +289,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </div> -->
                 <h4>4. Diskon</h4>
                 <div class="wrap">
                   <div class="row">
