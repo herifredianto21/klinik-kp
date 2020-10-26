@@ -36,6 +36,173 @@ class Tindakan_medis_model extends CI_Model {
     }
 
     
+    /* TINDAKAN */
+    
+    function _getTindakan($id_antrian = null)
+    {
+        $q = "SELECT 
+                id, nama_biaya_medis, biaya_medis, ket_biaya_medis
+            FROM 
+                biaya_medis
+            WHERE 
+                deleted_at IS NULL";
+        
+        if ($id_antrian != null) {
+            $q .= " AND id NOT IN (
+                        SELECT 
+                            tindakan_pasien_detail.id_biaya_medis
+                        FROM 
+                            tindakan_pasien_detail
+                        JOIN
+                            tindakan_pasien ON tindakan_pasien.id = tindakan_pasien_detail.id_tindakan_pasien
+                        JOIN
+                            biaya_medis ON biaya_medis.id = tindakan_pasien_detail.id_biaya_medis
+                        WHERE 
+                            tindakan_pasien_detail.deleted_at IS NULL AND
+                            tindakan_pasien.id_antrian = '$id_antrian'
+                    )";
+        }
+
+        $s = $this->db->query($q)->result();
+
+        return $s;
+    }
+
+    function _getAddedTindakan($id_antrian = null) 
+    {
+        $q = "SELECT 
+                tindakan_pasien.id, biaya_medis.nama_biaya_medis, tindakan_pasien_detail.biaya_medis, 
+                tindakan_pasien_detail.id AS id_tindakan_pasien_detail, tindakan_pasien_detail.jasa_medis, 
+                tindakan_pasien_detail.keterangan_tindakan_pasien
+            FROM 
+                tindakan_pasien_detail
+            JOIN
+                tindakan_pasien ON tindakan_pasien.id = tindakan_pasien_detail.id_tindakan_pasien
+            JOIN
+                biaya_medis ON biaya_medis.id = tindakan_pasien_detail.id_biaya_medis
+            WHERE 
+                tindakan_pasien_detail.deleted_at IS NULL AND
+                tindakan_pasien.id_antrian = '$id_antrian'";
+
+        $s = $this->db->query($q)->result();
+
+        return $s;
+    }
+
+    /*mengambil data berdasarkan id dari tabel biaya_medis */
+    function _getBiayaMedisById($id)
+    {
+        $q = "SELECT *
+            FROM 
+                biaya_medis
+            WHERE 
+               id = '$id'";
+
+        $s = $this->db->query($q)->result();
+        if(empty($s)) return [];
+        return $s;
+    }
+
+    function _addTindakan($id_tindakan_pasien, $id_biaya_medis, $keterangan_tindakan_pasien)
+    {
+        $tmpBiayaMedis = $this->_getBiayaMedisById($id_biaya_medis);
+        if(empty($tmpBiayaMedis)) {
+            echo "Error di _addTindakan()";
+            exit;
+        }else{
+            $tmpBiayaMedis = $tmpBiayaMedis[0];
+        }
+        
+        $q =    "INSERT INTO
+                    tindakan_pasien_detail
+                    (
+                        created_at,
+                        id_tindakan_pasien,
+                        id_biaya_medis,
+                        biaya_medis,
+                        keterangan_tindakan_pasien
+                    )
+                VALUES
+                    (
+                        NOW(),
+                        '". $this->db->escape_str($id_tindakan_pasien) ."',
+                        '". $this->db->escape_str($id_biaya_medis) ."',
+                        '". $tmpBiayaMedis->biaya_medis ."',
+                        '". $this->db->escape_str($keterangan_tindakan_pasien) ."'
+                    )
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _addTindakan()";
+            exit;
+        }
+
+        /* 
+        NOTE:
+        - kurang input untuk field jasa_medis
+        */
+    }
+
+    function _editAddedTindakan($id_tindakan_pasien_detail, $keterangan_tindakan_pasien)
+    {
+        $q =    "UPDATE
+                    tindakan_pasien_detail
+                SET
+                    updated_at = NOW(),
+                    keterangan_tindakan_pasien = '". $this->db->escape_str($keterangan_tindakan_pasien) ."'
+                WHERE
+                    id = '$id_tindakan_pasien_detail'
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _editAddedTindakan()";
+            exit;
+        }
+    }
+
+    function _deleteAddedTindakan($id)
+    {
+        $q = "DELETE FROM tindakan_pasien_detail WHERE id = '$id'";
+        
+        if ($this->db->simple_query($q)) {
+            echo '{ "text": "Berhasil menghapus." }';
+        } else {
+            echo '{ "text": "Gagal menghapus." }';
+        }
+    }
+
+    function _cekTindakanPasien($id_antrian)
+    {
+        $q = $this->db->query("SELECT * FROM tindakan_pasien WHERE id_antrian = '$id_antrian'");
+        return empty($q->row_array()) ? false : true;
+    }
+
+    function _addTindakanBaru($id_antrian, $id_dokter)
+    {
+        $q =    "INSERT INTO
+                    tindakan_pasien
+                    (
+                        created_at,
+                        id_antrian,
+                        id_dokter
+                    )
+                VALUES
+                    (
+                        NOW(),
+                        '". $this->db->escape_str($id_antrian) ."',
+                        '". $this->db->escape_str($id_dokter) ."'
+                    )
+                ;";
+        if (!$this->db->simple_query($q)) {
+            echo "Error di _addTindakanBaru()";
+            exit;
+        }
+    }
+    function _getIdTindakanPasien($id_antrian)
+    {
+        $q = $this->db->query("SELECT id FROM tindakan_pasien WHERE id_antrian = '$id_antrian' ORDER BY id DESC");
+        return $q->row()->id;
+    }
+
+    
     /* RESEP */
     
     function _getObat($id_antrian = null) 
@@ -211,173 +378,6 @@ class Tindakan_medis_model extends CI_Model {
     }
 
     
-    /* TINDAKAN */
-    
-    function _getTindakan($id_antrian = null)
-    {
-        $q = "SELECT 
-                id, nama_biaya_medis, biaya_medis, ket_biaya_medis
-            FROM 
-                biaya_medis
-            WHERE 
-                deleted_at IS NULL";
-        
-        if ($id_antrian != null) {
-            $q .= " AND id NOT IN (
-                        SELECT 
-                            tindakan_pasien_detail.id_biaya_medis
-                        FROM 
-                            tindakan_pasien_detail
-                        JOIN
-                            tindakan_pasien ON tindakan_pasien.id = tindakan_pasien_detail.id_tindakan_pasien
-                        JOIN
-                            biaya_medis ON biaya_medis.id = tindakan_pasien_detail.id_biaya_medis
-                        WHERE 
-                            tindakan_pasien_detail.deleted_at IS NULL AND
-                            tindakan_pasien.id_antrian = '$id_antrian'
-                    )";
-        }
-
-        $s = $this->db->query($q)->result();
-
-        return $s;
-    }
-
-    function _getAddedTindakan($id_antrian = null) 
-    {
-        $q = "SELECT 
-                tindakan_pasien.id, biaya_medis.nama_biaya_medis, tindakan_pasien_detail.biaya_medis, 
-                tindakan_pasien_detail.id AS id_tindakan_pasien_detail, tindakan_pasien_detail.jasa_medis, 
-                tindakan_pasien_detail.keterangan_tindakan_pasien
-            FROM 
-                tindakan_pasien_detail
-            JOIN
-                tindakan_pasien ON tindakan_pasien.id = tindakan_pasien_detail.id_tindakan_pasien
-            JOIN
-                biaya_medis ON biaya_medis.id = tindakan_pasien_detail.id_biaya_medis
-            WHERE 
-                tindakan_pasien_detail.deleted_at IS NULL AND
-                tindakan_pasien.id_antrian = '$id_antrian'";
-
-        $s = $this->db->query($q)->result();
-
-        return $s;
-    }
-
-    /*mengambil data berdasarkan id dari tabel biaya_medis */
-    function _getBiayaMedisById($id)
-    {
-        $q = "SELECT *
-            FROM 
-                biaya_medis
-            WHERE 
-               id = '$id'";
-
-        $s = $this->db->query($q)->result();
-        if(empty($s)) return [];
-        return $s;
-    }
-
-    function _addTindakan($id_tindakan_pasien, $id_biaya_medis, $keterangan_tindakan_pasien)
-    {
-        $tmpBiayaMedis = $this->_getBiayaMedisById($id_biaya_medis);
-        if(empty($tmpBiayaMedis)) {
-            echo "Error di _addTindakan()";
-            exit;
-        }else{
-            $tmpBiayaMedis = $tmpBiayaMedis[0];
-        }
-        
-        $q =    "INSERT INTO
-                    tindakan_pasien_detail
-                    (
-                        created_at,
-                        id_tindakan_pasien,
-                        id_biaya_medis,
-                        biaya_medis,
-                        keterangan_tindakan_pasien
-                    )
-                VALUES
-                    (
-                        NOW(),
-                        '". $this->db->escape_str($id_tindakan_pasien) ."',
-                        '". $this->db->escape_str($id_biaya_medis) ."',
-                        '". $tmpBiayaMedis->biaya_medis ."',
-                        '". $this->db->escape_str($keterangan_tindakan_pasien) ."'
-                    )
-                ;";
-        if (!$this->db->simple_query($q)) {
-            echo "Error di _addTindakan()";
-            exit;
-        }
-
-        /* 
-        NOTE:
-        - kurang input untuk field jasa_medis
-        */
-    }
-
-    function _editAddedTindakan($id_tindakan_pasien_detail, $keterangan_tindakan_pasien)
-    {
-        $q =    "UPDATE
-                    tindakan_pasien_detail
-                SET
-                    updated_at = NOW(),
-                    keterangan_tindakan_pasien = '". $this->db->escape_str($keterangan_tindakan_pasien) ."'
-                WHERE
-                    id = '$id_tindakan_pasien_detail'
-                ;";
-        if (!$this->db->simple_query($q)) {
-            echo "Error di _editAddedTindakan()";
-            exit;
-        }
-    }
-
-    function _deleteAddedTindakan($id)
-    {
-        $q = "DELETE FROM tindakan_pasien_detail WHERE id = '$id'";
-        
-        if ($this->db->simple_query($q)) {
-            echo '{ "text": "Berhasil menghapus." }';
-        } else {
-            echo '{ "text": "Gagal menghapus." }';
-        }
-    }
-
-    function _cekTindakanPasien($id_antrian)
-    {
-        $q = $this->db->query("SELECT * FROM tindakan_pasien WHERE id_antrian = '$id_antrian'");
-        return empty($q->row_array()) ? false : true;
-    }
-
-    function _addTindakanBaru($id_antrian, $id_dokter)
-    {
-        $q =    "INSERT INTO
-                    tindakan_pasien
-                    (
-                        created_at,
-                        id_antrian,
-                        id_dokter
-                    )
-                VALUES
-                    (
-                        NOW(),
-                        '". $this->db->escape_str($id_antrian) ."',
-                        '". $this->db->escape_str($id_dokter) ."'
-                    )
-                ;";
-        if (!$this->db->simple_query($q)) {
-            echo "Error di _addTindakanBaru()";
-            exit;
-        }
-    }
-    function _getIdTindakanPasien($id_antrian)
-    {
-        $q = $this->db->query("SELECT id FROM tindakan_pasien WHERE id_antrian = '$id_antrian' ORDER BY id DESC");
-        return $q->row()->id;
-    }
-
-
     /* SIMPAN TINDAKAN MEDIS */
 
     function _simpanTindakanMedis($id_tindakan_pasien, $diagnosa, $tindak_lanjut, $keterangan_tindak_lanjut)
